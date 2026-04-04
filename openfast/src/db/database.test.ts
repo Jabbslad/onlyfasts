@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { db } from "./database";
-import type { FastingSession, MealLog, HydrationEntry } from "../types";
+import type { FastingSession } from "../types";
 import { exportAllData, importAllData, clearAllData } from "./export-import";
 
 beforeEach(async () => {

@@ -25,7 +25,7 @@ export async function exportAllData(): Promise<ExportData> {
 export async function importAllData(data: ExportData, mode: "replace" | "merge"): Promise<void> {
   if (mode === "replace") { await clearAllData(); }
   await db.transaction("rw", [db.userProfile, db.fastingSessions, db.mealLogs, db.hydrationEntries, db.streaks, db.badges], async () => {
-    for (const item of data.userProfile) { await db.userProfile.add(parseDates(item as Record<string, unknown>)); }
+    for (const item of data.userProfile) { await db.userProfile.add(parseDates(item as Record<string, unknown>) as never); }
     for (const item of data.fastingSessions) { await db.fastingSessions.add(parseDates(item as Record<string, unknown>) as never); }
     for (const item of data.mealLogs) { await db.mealLogs.add(parseDates(item as Record<string, unknown>) as never); }
     for (const item of data.hydrationEntries) { await db.hydrationEntries.add(parseDates(item as Record<string, unknown>) as never); }

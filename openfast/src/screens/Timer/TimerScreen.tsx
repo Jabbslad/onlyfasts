@@ -63,7 +63,7 @@ export function TimerScreen() {
 
   async function handleStart() {
     if (!profile) return;
-    const id = await startFast(profile.selectedProtocol);
+    await startFast(profile.selectedProtocol);
     const fast = await getActiveFast();
     setActiveFast(fast);
     setElapsedMs(0);
