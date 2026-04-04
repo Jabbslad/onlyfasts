@@ -1,8 +1,12 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HydrationScreen } from "./HydrationScreen";
 import { db } from "../../db/database";
+
+afterEach(() => {
+  cleanup();
+});
 
 beforeEach(async () => {
   await db.delete();
