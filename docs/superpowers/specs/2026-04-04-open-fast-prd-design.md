@@ -1,6 +1,32 @@
 # OpenFast — Product Requirements Document
 
-An open source, privacy-first fasting and wellness tracking Progressive Web App. A free alternative to Zero Longevity with all data stored locally on-device.
+An open source, privacy-first fasting and wellness tracking Progressive Web App. A free alternative to [Zero Longevity](https://zerolongevity.com) with all data stored locally on-device.
+
+## Design Decisions Log
+
+The following decisions were made during the brainstorming session and are binding for this spec:
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Primary goal | Community health tool | Free, privacy-respecting alternative anyone can self-host and own their data |
+| Distribution | PWA only | No app store, installable from browser |
+| Data storage | Fully local/offline | All data in IndexedDB, no server, no accounts. Users export/import JSON manually |
+| Meal logging | Simple free-text | Log meal times + description only. No calorie/macro tracking, no AI photo analysis |
+| Educational content | Static bundled tips | Small set of guides shipped with the app. No CMS |
+| Fasting protocols | Preset protocols | 16:8, 18:6, 20:4, OMAD, 12:12, 14:10, 5:2 with timer adapting to target |
+| Navigation | 5 tabs | Timer, Log, Water, Progress, Settings — full feature parity with Zero |
+| Timer design | Dark & focused | Dark theme, circular SVG progress ring, minimal chrome |
+| Tech stack | React + Vite | Largest contributor pool, Dexie.js for IndexedDB, Tailwind CSS, Workbox PWA |
+
+## Approved Mockups
+
+Interactive mockups from the brainstorming session are preserved in `mockups/`:
+
+- `mockups/timer-screen.html` — Timer screen: dark theme with circular progress ring (Option A selected)
+- `mockups/remaining-screens.html` — Meal Log, Hydration, Progress, Settings, and Tab Bar designs
+- `mockups/screens-overview.html` — Navigation structure (5-tab layout, Option A selected)
+
+These mockups are the visual source of truth for the implementation.
 
 ## Problem Statement
 
@@ -297,12 +323,20 @@ Notifications require explicit user opt-in. All notification settings are in Set
 
 ## Visual Design
 
-- **Theme:** Dark mode only (dark navy #0f0f1a to #1a1a2e gradients)
-- **Accent Colors:** Indigo/purple (#818cf8, #6366f1) for primary actions, cyan (#38bdf8) for hydration, green (#4ade80) for success/completion, orange (#f97316) for streaks, red (#ef4444) for destructive actions
-- **Typography:** System font stack (system-ui), bold weights for numbers/timers
-- **Border Radius:** 10-12px for cards, 20-24px for pill buttons
-- **Spacing:** Generous padding, touch-friendly tap targets (minimum 44px)
-- **Transitions:** Subtle fade/scale transitions on state changes, smooth progress ring animation
+Approved during brainstorming as "Option A: Dark & Focused" — see `mockups/timer-screen.html`.
+
+- **Theme:** Dark mode only. Background gradient: `from-[#0f0f1a] to-[#1a1a2e]` (diagonal). Tab bar: `#0a0a14`. Card surfaces: `white/5` (5% white opacity). Borders/dividers: `#2a2a4a`.
+- **Accent Colors:**
+  - Indigo (#818cf8, #6366f1) — primary actions, protocol badge (`bg-indigo-500/20`), active tab
+  - Cyan (#38bdf8) — hydration elements, buttons use `bg-cyan-400/15` with `border-cyan-400/30`
+  - Green (#4ade80) — success/goal reached, completed day circles
+  - Orange (#f97316) — fasting streak count
+  - Red (#ef4444) — destructive actions, End Fast button, delete buttons
+- **Typography:** System font stack (system-ui), bold weights for numbers/timers. Timer display: `text-3xl font-bold` HTML overlay on SVG ring (not SVG text).
+- **Border Radius:** 10-12px (`rounded-xl`) for cards, 24px (`rounded-3xl`) for pill buttons, `rounded-full` for badges/tags
+- **Spacing:** Generous padding, touch-friendly tap targets (minimum 44px via `min-h-[44px] min-w-[44px]`)
+- **Layout:** All screens use `flex-1` in a flex column (not `min-h-screen`). Tab bar is part of flex layout (not fixed positioned).
+- **Transitions:** `active:scale-95 transition-transform` on buttons, `transition-all duration-1000` on progress ring stroke
 
 ## Accessibility
 
