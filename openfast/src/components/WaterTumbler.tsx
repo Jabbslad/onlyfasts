@@ -28,13 +28,15 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
   const waterTopWidth = getWidth(waterTop);
   const waterBottomWidth = getWidth(bodyBottom);
 
-  // Glass outline path (tapered tumbler shape)
+  // Glass outline path (tapered tumbler with curves at top and bottom)
   const cx = viewW / 2;
+  const rimCurve = 4; // slight upward curve at the rim
   const glassPath = `
     M ${cx - topWidth / 2} ${bodyTop}
-    L ${cx - bottomWidth / 2} ${bodyBottom}
-    Q ${cx} ${bodyBottom + 8} ${cx + bottomWidth / 2} ${bodyBottom}
-    L ${cx + topWidth / 2} ${bodyTop}
+    Q ${cx} ${bodyTop - rimCurve} ${cx + topWidth / 2} ${bodyTop}
+    L ${cx + bottomWidth / 2} ${bodyBottom}
+    Q ${cx} ${bodyBottom + 8} ${cx - bottomWidth / 2} ${bodyBottom}
+    Z
   `;
 
   // Water shape (clipped inside the glass)
@@ -78,10 +80,10 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
         {/* Clip to glass interior */}
         <clipPath id="glass-clip">
           <path d={`
-            M ${cx - topWidth / 2 + 3} ${bodyTop + 2}
-            L ${cx - bottomWidth / 2 + 3} ${bodyBottom - 2}
-            Q ${cx} ${bodyBottom + 6} ${cx + bottomWidth / 2 - 3} ${bodyBottom - 2}
-            L ${cx + topWidth / 2 - 3} ${bodyTop + 2}
+            M ${cx - topWidth / 2 + 2} ${bodyTop + 1}
+            Q ${cx} ${bodyTop - rimCurve + 1} ${cx + topWidth / 2 - 2} ${bodyTop + 1}
+            L ${cx + bottomWidth / 2 - 2} ${bodyBottom - 2}
+            Q ${cx} ${bodyBottom + 6} ${cx - bottomWidth / 2 + 2} ${bodyBottom - 2}
             Z
           `} />
         </clipPath>
@@ -123,17 +125,6 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
-      />
-
-      {/* Rim at the top */}
-      <line
-        x1={cx - topWidth / 2 - 2}
-        y1={bodyTop}
-        x2={cx + topWidth / 2 + 2}
-        y2={bodyTop}
-        stroke="rgba(255,255,255,0.3)"
-        strokeWidth="3"
-        strokeLinecap="round"
       />
 
       {/* Left side highlight (glass refraction) */}
