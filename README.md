@@ -25,6 +25,10 @@ Pick a protocol, start your fast, and watch your body progress through metabolic
 
 **[Try OnlyFasts live](https://onlyfasts.app)** — install it to your home screen for the full experience.
 
+<p align="center">
+  <img src="docs/screenshots/screenshot-2026-04-05_20-10-54.png" width="300" alt="OnlyFasts Timer Screen" />
+</p>
+
 Three screens, swipe to navigate:
 
 - **Timer** — Progress ring with coloured zone segments and curved labels, slide-to-end gesture, protocol picker
