@@ -96,10 +96,10 @@ export function SwipeNav({ children, initialIndex = 1, onSettingsTap }: SwipeNav
       {/* Horizontal scroll-snap container */}
       <div
         ref={scrollRef}
-        className="flex-1 flex overflow-x-auto overflow-y-hidden overscroll-x-none"
+        className="flex-1 flex overflow-x-auto overflow-y-hidden"
         style={{
           scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
+          overscrollBehaviorX: "contain",
           scrollbarWidth: "none",
         }}
       >
@@ -108,7 +108,7 @@ export function SwipeNav({ children, initialIndex = 1, onSettingsTap }: SwipeNav
             key={i}
             ref={(el) => { childRefs.current[i] = el; }}
             className="w-full h-full shrink-0 overflow-y-auto"
-            style={{ scrollSnapAlign: "center" }}
+            style={{ scrollSnapAlign: "center", scrollSnapStop: "always" }}
           >
             {child}
           </div>
