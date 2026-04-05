@@ -195,8 +195,8 @@ export function TimerScreen() {
         <ZoneTimeline elapsedMs={elapsedMs} onZoneTap={(id) => openExplorer(id)} />
       </div>
 
-      {/* Spacer — pushes controls to the bottom */}
-      <div className="flex-1" />
+      {/* Spacer — distributes space between timeline and controls */}
+      <div className="flex-[2]" />
 
       {/* Bottom controls */}
       {isActive ? (
@@ -215,7 +215,7 @@ export function TimerScreen() {
           </button>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-3 mb-6">
+        <div className="flex flex-col items-center gap-3">
           <button onClick={handleStart}
             className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
             Start Fast
@@ -228,6 +228,9 @@ export function TimerScreen() {
           </button>
         </div>
       )}
+
+      {/* Bottom breathing room */}
+      <div className="flex-[1]" />
 
       <ZoneExplorer
         open={explorerOpen}
