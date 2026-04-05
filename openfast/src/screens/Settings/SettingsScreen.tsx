@@ -169,6 +169,20 @@ export function SettingsScreen() {
           label="Tips & Guides"
           onPress={() => navigate("/settings/guides")}
         />
+        <SettingsRow
+          label="Check for Updates"
+          onPress={async () => {
+            if ("serviceWorker" in navigator) {
+              const regs = await navigator.serviceWorker.getRegistrations();
+              for (const reg of regs) await reg.unregister();
+            }
+            if ("caches" in window) {
+              const keys = await caches.keys();
+              for (const key of keys) await caches.delete(key);
+            }
+            window.location.reload();
+          }}
+        />
         <div className="flex items-center justify-between px-4 py-3.5">
           <span className="text-white text-sm">Version</span>
           <span className="text-gray-500 text-sm">{VERSION}</span>
