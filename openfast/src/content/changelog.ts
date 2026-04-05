@@ -6,6 +6,15 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.1.1",
+    date: "2026-04-05",
+    changes: [
+      "Changelog sheet — tap the version number in Settings to view full release history",
+      "Version number now includes git commit hash for traceability",
+      "Added CLAUDE.md and AGENTS.md for AI-assisted development workflow",
+    ],
+  },
+  {
     version: "0.1.0",
     date: "2026-04-05",
     changes: [
