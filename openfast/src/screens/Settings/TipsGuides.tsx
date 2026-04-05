@@ -12,15 +12,15 @@ export function TipsGuides() {
 
   return (
     <div className="min-h-screen bg-transparent p-4">
-      <h1 className="text-white text-2xl font-bold mb-6">Tips &amp; Guides</h1>
+      <h1 className="text-[#f0f0fa] text-2xl font-bold mb-6">Tips &amp; Guides</h1>
 
       <div className="flex flex-col gap-6">
         {Array.from(guidesByCategory.entries()).map(([category, guides]) => (
           <section key={category}>
-            <h2 className="text-indigo-300 text-sm font-semibold uppercase tracking-widest mb-2 px-1">
+            <h2 className="text-[#f0f0fa]/40 text-sm font-semibold uppercase tracking-widest mb-2 px-1">
               {category}
             </h2>
-            <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden divide-y divide-[#2a2a4a]">
+            <div className="bg-[rgba(240,240,250,0.03)] rounded-2xl overflow-hidden divide-y divide-[rgba(240,240,250,0.06)]">
               {guides.map((guide: Guide) => {
                 const isExpanded = expandedId === guide.id;
                 return (
@@ -28,14 +28,14 @@ export function TipsGuides() {
                     <button
                       type="button"
                       onClick={() => toggleGuide(guide.id)}
-                      className="w-full flex items-center justify-between px-4 py-3 text-left text-white text-sm font-medium hover:bg-[#2a2a4a] transition-colors"
+                      className="w-full flex items-center justify-between px-4 py-3 text-left text-[#f0f0fa] text-sm font-medium hover:bg-[rgba(240,240,250,0.04)] transition-colors"
                       aria-expanded={isExpanded}
                     >
                       <span>{guide.title}</span>
-                      <span className="text-indigo-400 ml-2 shrink-0">{isExpanded ? "▲" : "▼"}</span>
+                      <span className="text-[#f0f0fa]/50 ml-2 shrink-0">{isExpanded ? "▲" : "▼"}</span>
                     </button>
                     {isExpanded && (
-                      <div className="px-4 pb-4 text-gray-300 text-sm leading-relaxed">
+                      <div className="px-4 pb-4 text-[#f0f0fa]/50 text-sm leading-relaxed">
                         {guide.body}
                       </div>
                     )}

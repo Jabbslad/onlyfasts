@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,15 +9,21 @@ html, body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
-  background: linear-gradient(to bottom right, #0f0f1a, #1a1a2e) fixed;
+  background: #000000;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    system-ui, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Barlow', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #fff;
+  color: #f0f0fa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+input, textarea, select {
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 #root {
@@ -33,10 +41,10 @@ body {
 /* Smooth scrolling for vertical scrollable areas */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  scrollbar-color: rgba(240, 240, 250, 0.06) transparent;
 }
 
 /* Selection color */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(240, 240, 250, 0.15);
 }

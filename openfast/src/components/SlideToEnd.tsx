@@ -16,7 +16,9 @@ export function SlideToEnd({ onComplete, goalReached }: SlideToEndProps) {
   const thumbWidth = 64;
   const threshold = 0.85;
 
-  const thumbColor = goalReached ? "bg-emerald-500 shadow-emerald-500/30" : "bg-indigo-500 shadow-indigo-500/30";
+  const thumbColor = goalReached
+    ? "bg-[rgba(240,240,250,0.4)] border border-[rgba(240,240,250,0.35)]"
+    : "bg-[rgba(240,240,250,0.2)] border border-[rgba(240,240,250,0.35)]";
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (completed) return;
@@ -82,7 +84,7 @@ export function SlideToEnd({ onComplete, goalReached }: SlideToEndProps) {
   return (
     <div
       ref={trackRef}
-      className="relative w-full h-[72px] rounded-full bg-white/[0.06] overflow-hidden select-none touch-none"
+      className="relative w-full h-[72px] rounded-full bg-[rgba(240,240,250,0.06)] overflow-hidden select-none touch-none"
       role="slider"
       aria-label="Slide to end fast"
       aria-valuemin={0}
@@ -93,7 +95,7 @@ export function SlideToEnd({ onComplete, goalReached }: SlideToEndProps) {
     >
       {/* Label */}
       <span
-        className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm font-medium pointer-events-none transition-opacity duration-150"
+        className="absolute inset-0 flex items-center justify-center text-[#f0f0fa]/35 text-sm font-medium pointer-events-none transition-opacity duration-150"
         style={{ opacity: 1 - progress * 2 }}
       >
         Slide to end fast
@@ -102,7 +104,7 @@ export function SlideToEnd({ onComplete, goalReached }: SlideToEndProps) {
       {/* Thumb */}
       <div
         ref={thumbRef}
-        className={`absolute top-1 left-1 w-16 h-16 rounded-full ${thumbColor} shadow-lg flex items-center justify-center cursor-grab active:cursor-grabbing ${
+        className={`absolute top-1 left-1 w-16 h-16 rounded-full ${thumbColor} flex items-center justify-center cursor-grab active:cursor-grabbing ${
           !dragging ? "transition-transform duration-300 ease-out" : ""
         }`}
         style={{ transform: `translateX(${translateX}px)` }}
@@ -111,7 +113,7 @@ export function SlideToEnd({ onComplete, goalReached }: SlideToEndProps) {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f0fa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 6l6 6-6 6" />
         </svg>
       </div>

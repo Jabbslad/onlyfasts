@@ -43,7 +43,7 @@ export default function App() {
 
   if (!ready) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-navy-900">
+      <div className="flex-1 flex items-center justify-center bg-black">
         <div className="text-gray-500">Loading...</div>
       </div>
     );
@@ -55,7 +55,7 @@ export default function App() {
       <UpdatePrompt />
       <InstallPrompt />
       <LandscapeOverlay />
-      <div className="h-full bg-navy-900 text-white overflow-hidden">
+      <div className="h-full bg-black text-white overflow-hidden">
         <SwipeNav initialIndex={1} onSettingsTap={() => setShowSettings(true)}>
           <HydrationScreen />
           <TimerScreen />
@@ -65,11 +65,11 @@ export default function App() {
 
       {/* Settings as full-screen overlay */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden" style={{ background: "linear-gradient(to bottom right, #0f0f1a, #1a1a2e)" }}>
+        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden" style={{ background: "#000000" }}>
           <div className="shrink-0 px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => setShowSettings(false)}
-              className="text-indigo-400 text-sm font-medium min-h-[44px] flex items-center"
+              className="text-[#f0f0fa]/70 text-sm font-medium min-h-[44px] flex items-center"
             >
               &larr; Back
             </button>
@@ -82,11 +82,11 @@ export default function App() {
 
       {/* Tips & Guides overlay */}
       {showGuides && (
-        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden" style={{ background: "linear-gradient(to bottom right, #0f0f1a, #1a1a2e)" }}>
+        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden" style={{ background: "#000000" }}>
           <div className="shrink-0 px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => { setShowGuides(false); setShowSettings(true); }}
-              className="text-indigo-400 text-sm font-medium min-h-[44px] flex items-center"
+              className="text-[#f0f0fa]/70 text-sm font-medium min-h-[44px] flex items-center"
             >
               &larr; Settings
             </button>

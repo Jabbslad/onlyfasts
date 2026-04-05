@@ -164,7 +164,7 @@ export function TimerScreen() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-transparent">
-        <div className="text-gray-600 text-sm">Loading...</div>
+        <div className="text-[#f0f0fa]/40 text-sm">Loading...</div>
       </div>
     );
   }
@@ -208,7 +208,7 @@ export function TimerScreen() {
           {/* Started-at — quiet metadata docked above tab bar */}
           <button
             onClick={() => setEditStartOpen(true)}
-            className="mt-3 mb-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors"
+            className="mt-3 mb-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-[#f0f0fa]/35 text-xs hover:text-[#f0f0fa]/50 transition-colors"
           >
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z" />
@@ -219,12 +219,12 @@ export function TimerScreen() {
       ) : (
         <div className="flex flex-col items-center gap-3 mb-6">
           <button onClick={handleStart}
-            className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
+            className="border border-[rgba(240,240,250,0.35)] bg-[rgba(240,240,250,0.1)] text-[#f0f0fa] px-14 py-4 rounded-[32px] font-bold text-sm tracking-[1.17px] min-h-[52px] hover:bg-[rgba(240,240,250,0.15)] transition-all duration-200">
             Start Fast
           </button>
           <button
             onClick={() => openExplorer()}
-            className="text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors"
+            className="text-[#f0f0fa]/60 text-sm font-medium hover:text-[#f0f0fa]/80 transition-colors"
           >
             Explore Fasting Zones &rarr;
           </button>
@@ -262,7 +262,7 @@ export function TimerScreen() {
       />
 
       {showShareToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-green-600 text-white text-sm font-medium shadow-lg">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-[rgba(240,240,250,0.1)] border border-[rgba(240,240,250,0.35)] text-[#f0f0fa] text-sm font-medium">
           Shared!
         </div>
       )}

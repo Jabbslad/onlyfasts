@@ -13,7 +13,7 @@ describe("ProgressRing", () => {
   });
   it("shows goal reached state", () => {
     render(<ProgressRing elapsedMs={60_000_000} targetMs={57_600_000} />);
-    expect(screen.getByText("Goal Reached")).toBeInTheDocument();
+    expect(screen.getByText("GOAL REACHED")).toBeInTheDocument();
   });
   it("has accessible role", () => {
     render(<ProgressRing elapsedMs={0} targetMs={57_600_000} />);

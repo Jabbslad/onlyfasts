@@ -36,11 +36,11 @@ export function UpdatePrompt() {
   };
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-indigo-600 text-white text-sm font-medium shadow-lg">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-[rgba(240,240,250,0.1)] border border-[rgba(240,240,250,0.35)] text-[#f0f0fa] text-sm font-medium">
       <span>Update available</span>
       <button
         onClick={handleRefresh}
-        className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/40 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+        className="px-3 py-1 rounded-lg bg-[rgba(240,240,250,0.1)] hover:bg-[rgba(240,240,250,0.2)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center text-[#f0f0fa]"
       >
         Refresh
       </button>

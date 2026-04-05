@@ -16,7 +16,7 @@ export const ONBOARDING_SLIDES: OnboardingSlide[] = [
       "No accounts, no servers, no tracking",
       "Works completely offline as a PWA",
     ],
-    accentColor: "#818cf8",
+    accentColor: "#f0f0fa",
   },
   {
     id: "zones",
@@ -27,7 +27,7 @@ export const ONBOARDING_SLIDES: OnboardingSlide[] = [
       "Ketosis → Deep Ketosis for extended fasts",
       "Real-time zone tracking with a beautiful progress ring",
     ],
-    accentColor: "#38bdf8",
+    accentColor: "#f0f0fa",
   },
   {
     id: "benefits",
@@ -38,7 +38,7 @@ export const ONBOARDING_SLIDES: OnboardingSlide[] = [
       "Enhanced mental clarity and sustained energy",
       "Cellular repair and reduced inflammation",
     ],
-    accentColor: "#f59e0b",
+    accentColor: "#f0f0fa",
   },
   {
     id: "start",
@@ -49,6 +49,6 @@ export const ONBOARDING_SLIDES: OnboardingSlide[] = [
       "Hydration tracking to stay healthy while fasting",
       "Streaks and badges to keep you motivated",
     ],
-    accentColor: "#4ade80",
+    accentColor: "#f0f0fa",
   },
 ];

@@ -68,6 +68,7 @@ export interface FastingZone {
   endHour: number | null;
   color: string;
   glowColor: string;
+  opacity: number;
   description: string;
 }
 

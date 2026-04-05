@@ -26,8 +26,8 @@ function WeeklyCalendar({ sessions }: WeeklyCalendarProps) {
   });
 
   return (
-    <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 mb-5">
-      <h3 className="text-white text-sm font-medium mb-3">This Week</h3>
+    <div className="bg-[rgba(240,240,250,0.03)] border border-[rgba(240,240,250,0.06)] rounded-2xl p-4 mb-5">
+      <h3 className="text-[#f0f0fa] text-sm font-medium mb-3">This Week</h3>
       <div className="flex justify-between">
         {week.map((date, i) => {
           const isToday = isSameDay(date, today);
@@ -40,18 +40,18 @@ function WeeklyCalendar({ sessions }: WeeklyCalendarProps) {
 
           let circleClass = "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ";
           if (completedSession) {
-            circleClass += "bg-green-500/80 text-white";
+            circleClass += "bg-[#f0f0fa]/80 text-black";
           } else if (activeSession) {
-            circleClass += "bg-indigo-500/80 text-white";
+            circleClass += "bg-[#f0f0fa]/40 text-[#f0f0fa]";
           } else if (isToday) {
-            circleClass += "bg-white/[0.06] text-gray-200 ring-1.5 ring-indigo-400/50";
+            circleClass += "bg-[rgba(240,240,250,0.04)] text-[#f0f0fa]/40 ring-1.5 ring-[rgba(240,240,250,0.35)]";
           } else {
-            circleClass += "bg-white/[0.04] text-gray-500";
+            circleClass += "bg-[rgba(240,240,250,0.04)] text-[#f0f0fa]/40";
           }
 
           return (
             <div key={i} className="flex flex-col items-center gap-1.5">
-              <span className="text-gray-500 text-[10px] font-medium">{days[i]}</span>
+              <span className="text-[#f0f0fa]/40 text-[10px] font-medium">{days[i]}</span>
               <div className={circleClass}>{date.getDate()}</div>
             </div>
           );
@@ -127,27 +127,27 @@ export function ProgressScreen() {
             const count = fastingStreak?.currentCount ?? 0;
             if (canShare() && count > 0) shareStreak(count);
           }}
-          className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 flex flex-col items-center"
+          className="bg-[rgba(240,240,250,0.03)] border border-[rgba(240,240,250,0.06)] rounded-2xl p-4 flex flex-col items-center"
         >
-          <span className="text-orange-400 text-3xl font-bold">
+          <span className="text-[#f0f0fa] text-3xl font-bold">
             {loading ? "\u2014" : (fastingStreak?.currentCount ?? 0)}
           </span>
-          <span className="text-gray-500 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Fasting Streak</span>
+          <span className="text-[#f0f0fa]/40 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Fasting Streak</span>
           {canShare() && (fastingStreak?.currentCount ?? 0) > 0 && (
-            <span className="text-gray-600 text-[9px] mt-1">Tap to share</span>
+            <span className="text-[#f0f0fa]/30 text-[9px] mt-1">Tap to share</span>
           )}
         </button>
-        <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 flex flex-col items-center">
-          <span className="text-cyan-400 text-3xl font-bold">
+        <div className="bg-[rgba(240,240,250,0.03)] border border-[rgba(240,240,250,0.06)] rounded-2xl p-4 flex flex-col items-center">
+          <span className="text-[#f0f0fa] text-3xl font-bold">
             {loading ? "\u2014" : (hydrationStreak?.currentCount ?? 0)}
           </span>
-          <span className="text-gray-500 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Hydration Streak</span>
+          <span className="text-[#f0f0fa]/40 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Hydration Streak</span>
         </div>
-        <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl p-4 flex flex-col items-center">
-          <span className="text-indigo-400 text-3xl font-bold">
+        <div className="bg-[rgba(240,240,250,0.03)] border border-[rgba(240,240,250,0.06)] rounded-2xl p-4 flex flex-col items-center">
+          <span className="text-[#f0f0fa] text-3xl font-bold">
             {loading ? "\u2014" : totalFasts}
           </span>
-          <span className="text-gray-500 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Total Fasts</span>
+          <span className="text-[#f0f0fa]/40 text-[10px] font-medium mt-1.5 text-center uppercase tracking-wider">Total Fasts</span>
         </div>
       </div>
 
@@ -156,7 +156,7 @@ export function ProgressScreen() {
 
       {/* Badges */}
       <div className="mb-6">
-        <h2 className="text-sm font-medium text-white mb-3">Badges</h2>
+        <h2 className="text-sm font-medium text-[#f0f0fa] mb-3">Badges</h2>
         <div className="grid grid-cols-3 gap-2.5">
           {BADGE_DEFINITIONS.map((def) => {
             const earned = earnedBadgeTypes.has(def.type);
@@ -165,8 +165,8 @@ export function ProgressScreen() {
                 key={def.type}
                 className={`rounded-2xl p-3 flex flex-col items-center text-center transition-opacity ${
                   earned
-                    ? "bg-white/[0.04] border border-white/[0.08]"
-                    : "bg-white/[0.02] border border-dashed border-white/[0.06] opacity-30"
+                    ? "bg-[rgba(240,240,250,0.03)] border border-[rgba(240,240,250,0.06)]"
+                    : "bg-white/[0.02] border border-dashed border-[rgba(240,240,250,0.06)] opacity-30"
                 }`}
               >
                 <span className="text-2xl mb-1">{def.icon}</span>
@@ -180,9 +180,9 @@ export function ProgressScreen() {
 
       {/* History */}
       <div>
-        <h2 className="text-sm font-medium text-white mb-3">History</h2>
+        <h2 className="text-sm font-medium text-[#f0f0fa] mb-3">History</h2>
         {history.length === 0 ? (
-          <p className="text-gray-600 text-sm">No completed fasts yet.</p>
+          <p className="text-[#f0f0fa]/30 text-sm">No completed fasts yet.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {history.map((session, i) => {
@@ -207,13 +207,13 @@ export function ProgressScreen() {
                   key={session.id ?? i}
                   type="button"
                   onClick={() => handleSessionTap(session)}
-                  className="bg-white/[0.04] border border-white/[0.06] rounded-xl p-3.5 flex items-center justify-between w-full text-left hover:bg-white/[0.06] transition-colors"
+                  className="bg-[rgba(240,240,250,0.03)] border border-[rgba(240,240,250,0.06)] rounded-xl p-3.5 flex items-center justify-between w-full text-left hover:bg-[rgba(240,240,250,0.06)] transition-colors"
                 >
                   <div>
-                    <span className="text-white font-medium text-sm">{session.protocol}</span>
-                    <p className="text-gray-500 text-xs mt-0.5">{dateStr}</p>
+                    <span className="text-[#f0f0fa] font-medium text-sm">{session.protocol}</span>
+                    <p className="text-[#f0f0fa]/40 text-xs mt-0.5">{dateStr}</p>
                   </div>
-                  <span className="text-gray-400 text-sm font-mono tracking-wide">
+                  <span className="text-[#f0f0fa]/50 text-sm font-mono tracking-wide">
                     {formatDuration(durationMs)}
                   </span>
                 </button>

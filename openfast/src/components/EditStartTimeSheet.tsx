@@ -57,12 +57,12 @@ export function EditStartTimeSheet({ open, onClose, currentStartTime, onSave, on
 
   return (
     <div
-      className={`fixed inset-0 z-50 transition-colors duration-300 ${sheetUp ? "bg-black/70 backdrop-blur-sm" : "bg-transparent"}`}
+      className={`fixed inset-0 z-50 transition-colors duration-300 ${sheetUp ? "bg-black/80" : "bg-transparent"}`}
       onClick={onClose}
     >
       <div
         ref={sheetRef}
-        className={`absolute bottom-0 left-0 right-0 bg-[#12121f] rounded-t-3xl flex flex-col transition-transform duration-300 ease-out ${sheetUp ? "translate-y-0" : "translate-y-full"}`}
+        className={`absolute bottom-0 left-0 right-0 bg-black rounded-t-3xl flex flex-col transition-transform duration-300 ease-out ${sheetUp ? "translate-y-0" : "translate-y-full"}`}
         style={{ maxHeight: "45%" }}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
@@ -72,15 +72,15 @@ export function EditStartTimeSheet({ open, onClose, currentStartTime, onSave, on
       >
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-white/20" />
+          <div className="w-10 h-[2px] rounded-full bg-[rgba(240,240,250,0.2)]" />
         </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pb-4">
-          <h2 className="text-white text-lg font-semibold">Edit Start Time</h2>
+          <h2 className="text-sm font-bold tracking-[1.17px] text-[#f0f0fa]">Edit Start Time</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/[0.06] text-gray-400 hover:text-white transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgba(240,240,250,0.06)] text-[#f0f0fa]/50 hover:text-[#f0f0fa] transition-colors"
             aria-label="Close"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -98,7 +98,7 @@ export function EditStartTimeSheet({ open, onClose, currentStartTime, onSave, on
                 type="date"
                 value={dateValue}
                 onChange={(e) => setDateValue(e.target.value)}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors [color-scheme:dark]"
+                className="w-full bg-black border border-[rgba(240,240,250,0.35)] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[rgba(240,240,250,0.6)] transition-colors [color-scheme:dark]"
               />
             </div>
             <div className="flex-1 flex flex-col gap-1.5">
@@ -107,27 +107,27 @@ export function EditStartTimeSheet({ open, onClose, currentStartTime, onSave, on
                 type="time"
                 value={timeValue}
                 onChange={(e) => setTimeValue(e.target.value)}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors [color-scheme:dark]"
+                className="w-full bg-black border border-[rgba(240,240,250,0.35)] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[rgba(240,240,250,0.6)] transition-colors [color-scheme:dark]"
               />
             </div>
           </div>
 
           {isInFuture && (
-            <p className="text-red-400 text-xs">Start time cannot be in the future.</p>
+            <p className="text-[#f0f0fa]/50 text-xs">Start time cannot be in the future.</p>
           )}
 
           {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 py-3 rounded-xl bg-white/[0.06] text-sm font-medium text-gray-300 hover:bg-white/[0.1] transition-colors min-h-[48px]"
+              className="flex-1 py-3 rounded-xl bg-[rgba(240,240,250,0.06)] text-sm font-medium text-[#f0f0fa]/70 hover:bg-[rgba(240,240,250,0.1)] transition-colors min-h-[48px]"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={isInFuture || !hasChanged}
-              className="flex-1 py-3 rounded-xl bg-indigo-500 text-sm font-medium text-white min-h-[48px] transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-indigo-400"
+              className="flex-1 py-3 rounded-xl bg-[rgba(240,240,250,0.1)] border border-[rgba(240,240,250,0.35)] text-sm font-medium text-[#f0f0fa] min-h-[48px] transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[rgba(240,240,250,0.15)]"
             >
               Save
             </button>
@@ -136,7 +136,7 @@ export function EditStartTimeSheet({ open, onClose, currentStartTime, onSave, on
           {onDiscard && (
             <button
               onClick={onDiscard}
-              className="w-full py-3 text-red-400/70 text-xs hover:text-red-400 transition-colors mb-4"
+              className="w-full py-3 text-[#f0f0fa]/40 text-xs hover:text-[#f0f0fa]/60 transition-colors mb-4"
             >
               Discard this fast
             </button>

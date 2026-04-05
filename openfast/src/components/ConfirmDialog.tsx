@@ -44,7 +44,7 @@ export function ConfirmDialog({
         if (e.target === e.currentTarget) handleCancel();
       }}
     >
-      <div className="bg-[#1a1a2e] rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4">
+      <div className="bg-black rounded-2xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4">
         <h2 className="text-white text-lg font-semibold">{title}</h2>
         <p className="text-gray-400 text-sm">{message}</p>
 
@@ -57,7 +57,7 @@ export function ConfirmDialog({
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="bg-[#0f0f1a] border border-[#2a2a4a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"
+              className="bg-black border border-[rgba(240,240,250,0.35)] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[rgba(240,240,250,0.6)]"
               placeholder={confirmValue}
             />
           </div>
@@ -67,7 +67,7 @@ export function ConfirmDialog({
           <button
             type="button"
             onClick={handleCancel}
-            className="px-4 py-2 rounded-lg text-sm text-gray-300 bg-[#2a2a4a] hover:bg-[#3a3a5a] transition-colors"
+            className="px-4 py-2 rounded-lg text-sm text-[#f0f0fa]/70 bg-[rgba(240,240,250,0.06)] hover:bg-[rgba(240,240,250,0.1)] transition-colors"
           >
             Cancel
           </button>
@@ -75,7 +75,7 @@ export function ConfirmDialog({
             type="button"
             onClick={handleConfirm}
             disabled={!canConfirm}
-            className="px-4 py-2 rounded-lg text-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 rounded-lg text-sm text-[#f0f0fa] bg-[rgba(240,240,250,0.1)] border border-[rgba(240,240,250,0.35)] hover:bg-[rgba(240,240,250,0.15)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             {confirmLabel}
           </button>
