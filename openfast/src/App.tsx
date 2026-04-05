@@ -4,6 +4,7 @@ import { TabBar } from "./components/TabBar";
 import { UpdatePrompt } from "./components/UpdatePrompt";
 import { InstallPrompt } from "./components/InstallPrompt";
 import { LandscapeOverlay } from "./components/LandscapeOverlay";
+import { OnboardingIntro } from "./components/OnboardingIntro";
 import { TimerScreen } from "./screens/Timer/TimerScreen";
 import { HydrationScreen } from "./screens/Hydration/HydrationScreen";
 import { ProgressScreen } from "./screens/Progress/ProgressScreen";
@@ -13,6 +14,7 @@ import { db } from "./db/database";
 
 export default function App() {
   const [ready, setReady] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -23,11 +25,20 @@ export default function App() {
           dailyWaterGoalMl: 2500,
           createdAt: new Date(),
         });
+        setShowOnboarding(true);
       }
       setReady(true);
     }
     init();
   }, []);
+
+  async function handleOnboardingComplete() {
+    const profile = await db.userProfile.toCollection().first();
+    if (profile?.id !== undefined) {
+      await db.userProfile.update(profile.id, { onboardingCompleted: true });
+    }
+    setShowOnboarding(false);
+  }
 
   if (!ready) {
     return (
@@ -39,6 +50,7 @@ export default function App() {
 
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
+      {showOnboarding && <OnboardingIntro onComplete={handleOnboardingComplete} />}
       <UpdatePrompt />
       <InstallPrompt />
       <LandscapeOverlay />

@@ -77,4 +77,5 @@ export interface UserProfile {
   selectedProtocol: string;
   dailyWaterGoalMl: number;
   createdAt: Date;
+  onboardingCompleted?: boolean;
 }

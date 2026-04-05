@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.3.0",
+    date: "2026-04-05",
+    changes: [
+      "Added onboarding intro for first-time users — a 4-slide walkthrough introducing fasting benefits, metabolic zones, and app features with swipe navigation",
+    ],
+  },
+  {
     version: "0.2.3",
     date: "2026-04-05",
     changes: [
