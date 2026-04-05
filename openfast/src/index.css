@@ -7,7 +7,7 @@ html, body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
-  background: #0f0f1a;
+  background: linear-gradient(to bottom right, #0f0f1a, #1a1a2e) fixed;
 }
 
 body {

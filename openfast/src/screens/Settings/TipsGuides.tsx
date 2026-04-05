@@ -11,7 +11,7 @@ export function TipsGuides() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-indigo-950 p-4">
+    <div className="min-h-screen bg-transparent p-4">
       <h1 className="text-white text-2xl font-bold mb-6">Tips &amp; Guides</h1>
 
       <div className="flex flex-col gap-6">

@@ -79,7 +79,7 @@ export function MealLogScreen() {
   const dateLabel = getDateLabel(selectedDate);
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-6 overflow-y-auto">
+    <div className="flex-1 bg-transparent px-4 py-6 overflow-y-auto">
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-lg font-semibold text-white">{dateLabel}</h1>
         <button onClick={handleLogMeal}

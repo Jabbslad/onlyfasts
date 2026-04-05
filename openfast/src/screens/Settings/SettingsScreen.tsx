@@ -112,14 +112,14 @@ export function SettingsScreen({ onNavigateGuides }: SettingsScreenProps = {}) {
 
   if (loading) {
     return (
-      <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] flex items-center justify-center">
+      <div className="flex-1 bg-transparent flex items-center justify-center">
         <p className="text-gray-600 text-sm">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] overflow-y-auto p-4">
+    <div className="flex-1 bg-transparent overflow-y-auto p-4">
       {/* Fasting Section */}
       <SectionHeader label="Fasting" />
       <div className="bg-white/[0.04] border border-white/[0.06] rounded-xl overflow-hidden divide-y divide-white/[0.06] mb-6">

@@ -118,7 +118,7 @@ export function ProgressScreen() {
   }
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] text-white p-4 overflow-y-auto">
+    <div className="flex-1 bg-transparent text-white p-4 overflow-y-auto">
       {/* Stats Row */}
       <div className="grid grid-cols-3 gap-3 mb-5">
         <button

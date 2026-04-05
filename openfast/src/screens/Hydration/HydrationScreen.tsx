@@ -47,7 +47,7 @@ export function HydrationScreen() {
   const goalReached = totalMl >= goal;
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-6 overflow-y-auto">
+    <div className="flex-1 bg-transparent px-4 py-6 overflow-y-auto">
       {/* Goal display */}
       <div className="text-center mb-2">
         <div className="text-xs text-gray-500 uppercase tracking-widest font-medium mb-2">Daily Goal</div>

@@ -65,7 +65,7 @@ export default function App() {
 
       {/* Settings as full-screen overlay */}
       {showSettings && (
-        <div className="fixed inset-0 z-50 bg-[#0f0f1a] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden" style={{ background: "linear-gradient(to bottom right, #0f0f1a, #1a1a2e)" }}>
           <div className="shrink-0 px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => setShowSettings(false)}
@@ -82,7 +82,7 @@ export default function App() {
 
       {/* Tips & Guides overlay */}
       {showGuides && (
-        <div className="fixed inset-0 z-50 bg-[#0f0f1a] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden" style={{ background: "linear-gradient(to bottom right, #0f0f1a, #1a1a2e)" }}>
           <div className="shrink-0 px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => { setShowGuides(false); setShowSettings(true); }}

@@ -163,7 +163,7 @@ export function TimerScreen() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e]">
+      <div className="flex-1 flex items-center justify-center bg-transparent">
         <div className="text-gray-600 text-sm">Loading...</div>
       </div>
     );
@@ -176,7 +176,7 @@ export function TimerScreen() {
   const zone = isActive ? getZoneForElapsedMs(elapsedMs) : null;
 
   return (
-    <div className="h-full flex flex-col items-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-6">
+    <div className="h-full flex flex-col items-center bg-transparent px-6">
       {/* Top spacer — pushes ring down from the top */}
       <div className="flex-[2]" />
 
