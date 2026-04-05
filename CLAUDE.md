@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 OnlyFasts is a privacy-first intermittent fasting tracker PWA. All data stays on-device via IndexedDB (Dexie). No server, no accounts, fully offline.
 
-The app code lives in `openfast/` — all commands should be run from that directory.
+The app code lives in `onlyfasts/` — all commands should be run from that directory.
 
 ## Commands
 
 ```bash
-cd openfast
+cd onlyfasts
 
 npm run dev              # Dev server on localhost:5173 (use --host 0.0.0.0 for LAN)
 npm run build            # TypeScript check + production build

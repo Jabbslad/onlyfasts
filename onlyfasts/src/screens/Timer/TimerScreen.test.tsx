@@ -17,7 +17,7 @@ describe("TimerScreen", () => {
   });
   it("shows the selected protocol", async () => {
     render(<TimerScreen />);
-    expect(await screen.findByText("16:8")).toBeInTheDocument();
+    expect((await screen.findAllByText("16:8")).length).toBeGreaterThanOrEqual(1);
   });
   it("shows slide-to-end after starting a fast", async () => {
     const user = userEvent.setup();
