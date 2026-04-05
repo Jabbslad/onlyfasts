@@ -22,3 +22,25 @@ Before every commit, you MUST:
    - Run `npx tsc --noEmit` from the `openfast/` directory
    - Run `npx vitest run` from the `openfast/` directory
    - Both must pass before committing
+
+## iOS PWA Layout — DO NOT REGRESS
+
+This app went through 15+ failed attempts to fix bottom safe-area issues on iOS. The following rules are non-negotiable:
+
+1. **NEVER add `viewport-fit=cover`** to the viewport meta tag. Without it, iOS handles unsafe areas (status bar, home indicator) automatically using `theme-color`. With it, you become responsible for safe areas and the tools iOS provides (`env(safe-area-inset-*)`) are unreliable across versions.
+
+2. **NEVER use `env(safe-area-inset-*)` anywhere.** It behaves inconsistently with `position: fixed`, `100dvh`, `100%`, and flexbox in iOS standalone PWA mode. There must be zero references to `safe-area-inset` in the entire codebase.
+
+3. **NEVER place interactive navigation at the bottom of the screen.** The app uses swipe navigation with top-positioned dot indicators specifically to avoid bottom safe-area issues. Do not re-introduce a bottom tab bar, bottom nav, or any fixed-position element anchored to the screen bottom.
+
+4. **Keep the CSS layout simple.** The correct structure is:
+   ```css
+   html, body { height: 100%; overflow: hidden; }
+   body { background: linear-gradient(...) fixed; }
+   #root { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+   ```
+   Screens are `bg-transparent` — the body gradient shows through.
+
+5. **Set `theme-color` in index.html** to match the app background. iOS uses this for the status bar and home indicator areas.
+
+If you find yourself writing CSS to handle iOS safe areas, **stop and redesign the UI** so the safe areas don't matter.
