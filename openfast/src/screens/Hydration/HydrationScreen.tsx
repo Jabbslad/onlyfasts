@@ -4,6 +4,7 @@ import type { HydrationEntry, UserProfile } from "../../types";
 import { getStartOfDay, getEndOfDay, formatTime } from "../../utils/time";
 import { evaluateHydrationStreak } from "../../hooks/useStreaks";
 import { evaluateBadges } from "../../hooks/useBadges";
+import { WaterTumbler } from "../../components/WaterTumbler";
 
 export function HydrationScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -48,6 +49,11 @@ export function HydrationScreen() {
 
   return (
     <div className="flex-1 bg-transparent px-4 py-6 overflow-y-auto">
+      {/* Water tumbler */}
+      <div className="mb-4">
+        <WaterTumbler fillPercent={percentage} size={160} />
+      </div>
+
       {/* Goal display */}
       <div className="text-center mb-2">
         <div className="text-xs text-gray-500 uppercase tracking-widest font-medium mb-2">Daily Goal</div>

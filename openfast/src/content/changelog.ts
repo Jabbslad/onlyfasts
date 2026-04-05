@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.1",
+    date: "2026-04-05",
+    changes: [
+      "Added animated water tumbler SVG on the Hydration screen — a translucent glass that gradually fills with water as you log each 250ml",
+    ],
+  },
+  {
     version: "0.4.0",
     date: "2026-04-05",
     changes: [
