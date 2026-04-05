@@ -86,31 +86,30 @@ export function SettingsScreen() {
   if (loading) {
     return (
       <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-gray-600 text-sm">Loading...</p>
       </div>
     );
   }
 
   return (
     <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] overflow-y-auto p-4">
-      <h1 className="text-white text-2xl font-bold mb-6">Settings</h1>
-
       {/* Fasting Section */}
       <SectionHeader label="Fasting" />
-      <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden divide-y divide-[#2a2a4a] mb-6">
+      <div className="bg-white/[0.04] border border-white/[0.06] rounded-xl overflow-hidden divide-y divide-white/[0.06] mb-6">
         <SettingsRow
           label="Fasting Protocol"
-          value={profile?.selectedProtocol ?? "—"}
+          value={profile?.selectedProtocol ?? "\u2014"}
+          valueColor="text-indigo-400"
           onPress={() => setShowProtocolPicker(true)}
         />
       </div>
 
       {/* Hydration Section */}
       <SectionHeader label="Hydration" />
-      <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden divide-y divide-[#2a2a4a] mb-6">
+      <div className="bg-white/[0.04] border border-white/[0.06] rounded-xl overflow-hidden divide-y divide-white/[0.06] mb-6">
         <SettingsRow
           label="Daily Water Goal"
-          value={profile ? `${profile.dailyWaterGoalMl} ml` : "—"}
+          value={profile ? `${profile.dailyWaterGoalMl.toLocaleString()} ml` : "\u2014"}
           onPress={() => {
             setWaterGoalInput(String(profile?.dailyWaterGoalMl ?? ""));
             setShowWaterGoal(true);
@@ -120,23 +119,22 @@ export function SettingsScreen() {
 
       {/* Data Section */}
       <SectionHeader label="Data" />
-      <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden divide-y divide-[#2a2a4a] mb-6">
-        <SettingsRow label="Export Data" onPress={handleExport} />
+      <div className="bg-white/[0.04] border border-white/[0.06] rounded-xl overflow-hidden divide-y divide-white/[0.06] mb-6">
+        <SettingsRow label="Export Data" value="JSON" onPress={handleExport} />
         <SettingsRow label="Import Data" onPress={handleImportClick} />
         <SettingsRow label="Clear All Data" onPress={() => setShowClearConfirm(true)} destructive />
       </div>
 
       {/* About Section */}
       <SectionHeader label="About" />
-      <div className="bg-[#1a1a2e] rounded-2xl overflow-hidden divide-y divide-[#2a2a4a] mb-6">
+      <div className="bg-white/[0.04] border border-white/[0.06] rounded-xl overflow-hidden divide-y divide-white/[0.06] mb-6">
         <SettingsRow
           label="Tips & Guides"
           onPress={() => navigate("/settings/guides")}
-          showChevron
         />
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-4 py-3.5">
           <span className="text-white text-sm">Version</span>
-          <span className="text-gray-400 text-sm">{VERSION}</span>
+          <span className="text-gray-500 text-sm">{VERSION}</span>
         </div>
       </div>
 
@@ -152,28 +150,28 @@ export function SettingsScreen() {
       {/* Protocol Picker Modal */}
       {showProtocolPicker && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm"
           onClick={() => setShowProtocolPicker(false)}
         >
           <div
-            className="bg-[#1a1a2e] rounded-t-2xl w-full max-w-md p-4 pb-8"
+            className="bg-[#1a1a2e] border-t border-white/[0.08] rounded-t-2xl w-full max-w-md p-4 pb-8"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-white text-lg font-semibold mb-4">Select Protocol</h2>
-            <div className="flex flex-col divide-y divide-[#2a2a4a]">
+            <div className="flex flex-col divide-y divide-white/[0.06]">
               {PROTOCOLS.map((p) => (
                 <button
                   key={p.id}
                   type="button"
                   onClick={() => updateProtocol(p.id)}
-                  className="flex items-center justify-between py-3 text-white text-sm hover:bg-[#2a2a4a] px-2 rounded transition-colors"
+                  className="flex items-center justify-between py-3 text-white text-sm hover:bg-white/[0.04] px-2 rounded transition-colors"
                 >
                   <span>
                     {p.name}
-                    <span className="text-gray-400 ml-2 text-xs">({p.category})</span>
+                    <span className="text-gray-500 ml-2 text-xs">({p.category})</span>
                   </span>
                   {profile?.selectedProtocol === p.id && (
-                    <span className="text-indigo-400">✓</span>
+                    <span className="text-indigo-400">&#10003;</span>
                   )}
                 </button>
               ))}
@@ -181,7 +179,7 @@ export function SettingsScreen() {
             <button
               type="button"
               onClick={() => setShowProtocolPicker(false)}
-              className="mt-4 w-full py-2 rounded-xl bg-[#2a2a4a] text-gray-300 text-sm hover:bg-[#3a3a5a] transition-colors"
+              className="mt-4 w-full py-3 rounded-xl bg-white/[0.06] text-gray-300 text-sm hover:bg-white/[0.1] transition-colors"
             >
               Cancel
             </button>
@@ -192,21 +190,21 @@ export function SettingsScreen() {
       {/* Water Goal Modal */}
       {showWaterGoal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
           onClick={() => setShowWaterGoal(false)}
         >
           <div
-            className="bg-[#1a1a2e] rounded-2xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4"
+            className="bg-[#1a1a2e] border border-white/[0.08] rounded-2xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-white text-lg font-semibold">Daily Water Goal</h2>
-            <div className="flex flex-col gap-1">
-              <label className="text-gray-400 text-xs">Amount in ml</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-gray-500 text-xs font-medium">Amount in ml</label>
               <input
                 type="number"
                 value={waterGoalInput}
                 onChange={(e) => setWaterGoalInput(e.target.value)}
-                className="bg-[#0f0f1a] border border-[#2a2a4a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"
+                className="bg-[#0f0f1a] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                 placeholder="2500"
                 min={100}
                 max={10000}
@@ -216,14 +214,14 @@ export function SettingsScreen() {
               <button
                 type="button"
                 onClick={() => setShowWaterGoal(false)}
-                className="px-4 py-2 rounded-lg text-sm text-gray-300 bg-[#2a2a4a] hover:bg-[#3a3a5a] transition-colors"
+                className="px-5 py-2.5 rounded-xl text-sm text-gray-300 bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={updateWaterGoal}
-                className="px-4 py-2 rounded-lg text-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                className="px-5 py-2.5 rounded-xl text-sm text-white bg-indigo-500 hover:bg-indigo-400 transition-colors"
               >
                 Save
               </button>
@@ -248,7 +246,7 @@ export function SettingsScreen() {
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <p className="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-1 px-1">
+    <p className="text-gray-500 text-[11px] font-semibold uppercase tracking-widest mb-2 px-1">
       {label}
     </p>
   );
@@ -257,24 +255,24 @@ function SectionHeader({ label }: { label: string }) {
 interface SettingsRowProps {
   label: string;
   value?: string;
+  valueColor?: string;
   onPress: () => void;
-  showChevron?: boolean;
   destructive?: boolean;
 }
 
-function SettingsRow({ label, value, onPress, showChevron, destructive }: SettingsRowProps) {
+function SettingsRow({ label, value, valueColor, onPress, destructive }: SettingsRowProps) {
   return (
     <button
       type="button"
       onClick={onPress}
-      className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#2a2a4a] transition-colors"
+      className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-white/[0.03] transition-colors"
     >
-      <span className={`text-sm font-medium ${destructive ? "text-red-400" : "text-white"}`}>
+      <span className={`text-sm ${destructive ? "text-red-400" : "text-white"}`}>
         {label}
       </span>
-      <span className="flex items-center gap-1 text-gray-400 text-sm">
-        {value && <span>{value}</span>}
-        {showChevron && <span>›</span>}
+      <span className="flex items-center gap-1.5">
+        {value && <span className={`text-sm ${valueColor || "text-gray-500"}`}>{value}</span>}
+        <span className="text-gray-600 text-xs">&rsaquo;</span>
       </span>
     </button>
   );

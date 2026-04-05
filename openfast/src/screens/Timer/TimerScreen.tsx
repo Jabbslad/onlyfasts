@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { ProgressRing } from "../../components/ProgressRing";
-import { startFast, endFast, getActiveFast } from "../../hooks/useFastingTimer";
+import { startFast, endFast, cancelFast, getActiveFast, updateFastStartTime } from "../../hooks/useFastingTimer";
 import { evaluateFastingStreak, getStreak } from "../../hooks/useStreaks";
 import { evaluateBadges } from "../../hooks/useBadges";
 import { getProtocol, getTargetDurationMs } from "../../utils/protocols";
 import { sendNotification } from "../../utils/notifications";
 import { formatTime } from "../../utils/time";
+import { getZoneForElapsedMs } from "../../utils/zones";
+import { ZoneTimeline } from "../../components/ZoneTimeline";
+import { ZoneExplorer } from "../../components/ZoneExplorer";
+import { EditStartTimeSheet } from "../../components/EditStartTimeSheet";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { SlideToEnd } from "../../components/SlideToEnd";
 import { db } from "../../db/database";
 import type { FastingSession, UserProfile } from "../../types";
 
@@ -16,6 +22,11 @@ export function TimerScreen() {
   const [streakCount, setStreakCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const notifiedRef = useRef(false);
+
+  const [explorerOpen, setExplorerOpen] = useState(false);
+  const [explorerInitialZone, setExplorerInitialZone] = useState<string | undefined>();
+  const [editStartOpen, setEditStartOpen] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   // Load initial state from DB
   useEffect(() => {
@@ -82,10 +93,32 @@ export function TimerScreen() {
     notifiedRef.current = false;
   }
 
+  async function handleCancel() {
+    if (!activeFast?.id) return;
+    await cancelFast(activeFast.id);
+    setActiveFast(undefined);
+    setElapsedMs(0);
+    setShowCancelConfirm(false);
+    notifiedRef.current = false;
+  }
+
+  async function handleUpdateStartTime(newStartTime: Date) {
+    if (!activeFast?.id) return;
+    await updateFastStartTime(activeFast.id, newStartTime);
+    setActiveFast({ ...activeFast, startTime: newStartTime });
+    setElapsedMs(Date.now() - newStartTime.getTime());
+    setEditStartOpen(false);
+  }
+
+  function openExplorer(zoneId?: string) {
+    setExplorerInitialZone(zoneId);
+    setExplorerOpen(true);
+  }
+
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e]">
-        <div className="text-gray-500">Loading...</div>
+        <div className="text-gray-600 text-sm">Loading...</div>
       </div>
     );
   }
@@ -94,42 +127,96 @@ export function TimerScreen() {
   const protocol = getProtocol(protocolId);
   const targetMs = getTargetDurationMs(protocolId);
   const isActive = !!activeFast;
-  const percentage = targetMs > 0 ? Math.min(Math.round((elapsedMs / targetMs) * 100), 100) : 0;
+  const zone = isActive ? getZoneForElapsedMs(elapsedMs) : null;
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-6 py-8">
-      {protocol && (
-        <span className="bg-indigo-500/20 text-indigo-400 px-4 py-1 rounded-full text-sm mb-6">
-          {protocol.name} Protocol
-        </span>
-      )}
+    <div className="flex-1 flex flex-col items-center bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-6 py-[env(safe-area-inset-top)]">
+      {/* Top spacer — pushes ring down from the top */}
+      <div className="flex-[2]" />
 
-      <ProgressRing elapsedMs={isActive ? elapsedMs : 0} targetMs={targetMs} />
+      <ProgressRing
+        elapsedMs={isActive ? elapsedMs : 0}
+        targetMs={targetMs}
+        size={300}
+        zoneColor={zone?.color}
+        zoneGlowColor={zone?.glowColor}
+        protocolName={protocol?.name}
+        streakCount={streakCount}
+      />
 
-      {isActive && (
-        <div className="mt-4 text-center">
-          <div className="text-green-400 text-sm font-medium">{percentage}% complete</div>
-          <div className="text-gray-500 text-xs mt-1">Started at {formatTime(activeFast!.startTime)}</div>
+      {/* Middle spacer — separates ring from controls */}
+      <div className="flex-[1]" />
+
+      {isActive ? (
+        <>
+          <ZoneTimeline elapsedMs={elapsedMs} onZoneTap={(id) => openExplorer(id)} />
+
+          {/* Spacer */}
+          <div className="min-h-[24px] flex-1" />
+
+          {/* Slide to end */}
+          <div className="w-full max-w-sm px-2">
+            <SlideToEnd onComplete={handleEnd} goalReached={elapsedMs >= targetMs && targetMs > 0} />
+          </div>
+
+          {/* Started-at — quiet metadata at the bottom */}
+          <button
+            onClick={() => setEditStartOpen(true)}
+            className="mt-3 mb-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors"
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z" />
+            </svg>
+            Started at {formatTime(activeFast!.startTime)}
+          </button>
+        </>
+      ) : (
+        <div className="flex flex-col items-center gap-3 mt-4 mb-2">
+          <button onClick={handleStart}
+            className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
+            Start Fast
+          </button>
+          <button
+            onClick={() => openExplorer()}
+            className="text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors"
+          >
+            Explore Fasting Zones &rarr;
+          </button>
         </div>
       )}
 
-      <div className="mt-8">
-        {isActive ? (
-          <button onClick={handleEnd}
-            className="bg-red-500 text-white px-10 py-3 rounded-3xl font-semibold text-lg min-h-[44px] active:scale-95 transition-transform">
-            End Fast
-          </button>
-        ) : (
-          <button onClick={handleStart}
-            className="bg-indigo-500 text-white px-10 py-3 rounded-3xl font-semibold text-lg min-h-[44px] active:scale-95 transition-transform">
-            Start Fast
-          </button>
-        )}
-      </div>
+      {/* Bottom spacer — adds breathing room above tab bar */}
+      <div className="flex-[1]" />
 
-      <div className="mt-6 pt-4 border-t border-[#2a2a4a] w-full max-w-xs text-center">
-        <span className="text-gray-500 text-sm">{streakCount} day streak</span>
-      </div>
+      <ZoneExplorer
+        open={explorerOpen}
+        onClose={() => setExplorerOpen(false)}
+        currentZoneId={zone?.id}
+        initialZoneId={explorerInitialZone}
+        elapsedMs={isActive ? elapsedMs : undefined}
+      />
+
+      {activeFast && (
+        <EditStartTimeSheet
+          open={editStartOpen}
+          onClose={() => setEditStartOpen(false)}
+          currentStartTime={activeFast.startTime}
+          onSave={handleUpdateStartTime}
+          onDiscard={() => {
+            setEditStartOpen(false);
+            setTimeout(() => setShowCancelConfirm(true), 300);
+          }}
+        />
+      )}
+
+      <ConfirmDialog
+        open={showCancelConfirm}
+        title="Discard Fast"
+        message="This fast won't be counted toward your streak or history."
+        confirmLabel="Discard"
+        onConfirm={handleCancel}
+        onCancel={() => setShowCancelConfirm(false)}
+      />
     </div>
   );
 }

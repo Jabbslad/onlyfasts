@@ -61,6 +61,16 @@ export interface Badge {
   earnedAt: Date;
 }
 
+export interface FastingZone {
+  id: string;
+  name: string;
+  startHour: number;
+  endHour: number | null;
+  color: string;
+  glowColor: string;
+  description: string;
+}
+
 export interface UserProfile {
   id?: number;
   name?: string;

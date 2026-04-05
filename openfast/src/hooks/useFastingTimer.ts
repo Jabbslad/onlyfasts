@@ -23,3 +23,11 @@ export async function cancelFast(sessionId: number): Promise<void> {
 export async function getActiveFast(): Promise<FastingSession | undefined> {
   return db.fastingSessions.where("status").equals("active").first();
 }
+
+export async function updateFastStartTime(sessionId: number, newStartTime: Date): Promise<void> {
+  await db.fastingSessions.update(sessionId, { startTime: newStartTime });
+}
+
+export async function deleteFast(sessionId: number): Promise<void> {
+  await db.fastingSessions.delete(sessionId);
+}

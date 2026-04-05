@@ -14,6 +14,12 @@ export const GUIDES: Guide[] = [
     body: "Intermittent fasting is an eating pattern that cycles between periods of fasting and eating. It does not specify which foods to eat, but rather when you should eat them. Common methods involve daily fasting windows or fasting a couple of days per week. Research suggests it can support weight management, metabolic health, and cellular repair processes.",
   },
   {
+    id: "fasting-zones",
+    category: "Getting Started",
+    title: "Understanding Fasting Zones",
+    body: "As your fast progresses, your body moves through five distinct metabolic zones: Anabolic, Catabolic, Fat Burning, Ketosis, and Deep Ketosis. Each zone represents a different metabolic state with unique benefits. Tap any zone on the timer screen's timeline bar to explore what happens in each stage, what it means for your body, and tips for getting the most out of your fast.",
+  },
+  {
     id: "choosing-first-protocol",
     category: "Getting Started",
     title: "Choosing Your First Protocol",

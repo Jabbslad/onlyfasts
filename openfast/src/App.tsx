@@ -37,8 +37,8 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-[100dvh] bg-navy-900 text-white">
-        <main className="flex-1 flex flex-col">
+      <div className="flex flex-col h-[100dvh] bg-navy-900 text-white overflow-hidden">
+        <main className="flex-1 flex flex-col overflow-hidden">
           <Routes>
             <Route path="/" element={<TimerScreen />} />
             <Route path="/log" element={<MealLogScreen />} />

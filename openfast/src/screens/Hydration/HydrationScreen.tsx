@@ -43,38 +43,74 @@ export function HydrationScreen() {
   const goal = profile?.dailyWaterGoalMl ?? 2000;
   const dropCount = Math.ceil(goal / 250);
   const filledDrops = Math.floor(totalMl / 250);
+  const percentage = Math.min(Math.round((totalMl / goal) * 100), 100);
+  const goalReached = totalMl >= goal;
 
   return (
     <div className="flex-1 bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-6 overflow-y-auto">
-      <div className="text-center mb-6">
-        <div className="text-sm text-gray-500">Daily Goal</div>
+      {/* Goal display */}
+      <div className="text-center mb-2">
+        <div className="text-xs text-gray-500 uppercase tracking-widest font-medium mb-2">Daily Goal</div>
         <div className="text-3xl font-bold text-cyan-400">
           {totalMl.toLocaleString("en-US")}
-          <span className="text-base text-gray-500"> / {goal.toLocaleString("en-US")} ml</span>
+          <span className="text-base font-normal text-gray-500 ml-1">/ {goal.toLocaleString("en-US")} ml</span>
         </div>
       </div>
 
-      <div className="flex justify-center gap-1.5 flex-wrap max-w-[240px] mx-auto mb-6">
+      {/* Progress bar */}
+      <div className="mx-auto max-w-[260px] mb-6">
+        <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${percentage}%`,
+              background: goalReached
+                ? "linear-gradient(90deg, #4ade80, #22d3ee)"
+                : "linear-gradient(90deg, #0ea5e9, #38bdf8)",
+              boxShadow: `0 0 12px ${goalReached ? "rgba(74,222,128,0.3)" : "rgba(56,189,248,0.3)"}`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Water drops visual */}
+      <div className="flex justify-center gap-2 flex-wrap max-w-[240px] mx-auto mb-8">
         {Array.from({ length: dropCount }, (_, i) => (
-          <span key={i} className="text-2xl" style={{ opacity: i < filledDrops ? 1 : 0.3 }}>💧</span>
+          <span
+            key={i}
+            className="text-2xl transition-opacity duration-300"
+            style={{ opacity: i < filledDrops ? 1 : 0.15 }}
+          >
+            💧
+          </span>
         ))}
       </div>
 
-      <div className="flex justify-center gap-3 mb-6">
+      {/* Quick add buttons */}
+      <div className="flex justify-center gap-3 mb-8">
         <button onClick={() => addWater(250)} aria-label="+ 250 ml"
-          className="bg-cyan-400/15 border border-cyan-400/30 text-cyan-400 px-5 py-2.5 rounded-full text-sm min-h-[44px]">+ 250 ml</button>
+          className="bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 px-5 py-2.5 rounded-full text-sm min-h-[44px] hover:bg-cyan-400/15 active:scale-95 transition-all duration-200">
+          + 250 ml
+        </button>
         <button onClick={() => addWater(500)} aria-label="+ 500 ml"
-          className="bg-cyan-400/15 border border-cyan-400/30 text-cyan-400 px-5 py-2.5 rounded-full text-sm min-h-[44px]">+ 500 ml</button>
+          className="bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 px-5 py-2.5 rounded-full text-sm min-h-[44px] hover:bg-cyan-400/15 active:scale-95 transition-all duration-200">
+          + 500 ml
+        </button>
       </div>
 
-      <div className="space-y-0">
+      {/* Today's log */}
+      <div>
         {entries.map((entry) => (
-          <div key={entry.id} className="flex justify-between items-center py-2 border-b border-[#2a2a4a] text-sm">
+          <div key={entry.id} className="flex justify-between items-center py-2.5 border-b border-white/[0.06] text-sm">
             <span className="text-gray-500">{formatTime(entry.timestamp)}</span>
             <div className="flex items-center gap-3">
-              <span>{entry.amountMl} ml</span>
+              <span className="text-gray-300">{entry.amountMl} ml</span>
               <button onClick={() => deleteEntry(entry.id!)} aria-label="Delete entry"
-                className="text-red-400 min-w-[44px] min-h-[44px] flex items-center justify-center">✕</button>
+                className="text-gray-700 hover:text-red-400 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18" /><path d="M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         ))}
