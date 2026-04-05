@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.5",
+    date: "2026-04-05",
+    changes: [
+      "Progress ring arc now shows a gradient that flows through each fasting stage colour — indigo through cyan through amber as you progress deeper into your fast",
+    ],
+  },
+  {
     version: "0.4.4",
     date: "2026-04-05",
     changes: [

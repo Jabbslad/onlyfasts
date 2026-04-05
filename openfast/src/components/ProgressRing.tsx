@@ -36,14 +36,13 @@ function describeArc(cx: number, cy: number, r: number, startAngle: number, endA
   return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
 }
 
-export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneGlowColor, protocolName, streakCount }: ProgressRingProps) {
+export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor: _zoneColor, zoneGlowColor, protocolName, streakCount }: ProgressRingProps) {
   const strokeWidth = 42;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const ringScaleMs = getRingScale(targetMs);
   const targetProgress = ringScaleMs > 0 ? Math.min(elapsedMs / ringScaleMs, 1) : 0;
   const goalReached = elapsedMs >= targetMs && targetMs > 0;
-  const strokeColor = goalReached ? "#4ade80" : (zoneColor ?? "#818cf8");
   const glowColor = goalReached ? "rgba(74, 222, 128, 0.3)" : (zoneGlowColor ?? "rgba(129, 140, 248, 0.25)");
   const center = size / 2;
   const elapsedHours = elapsedMs / 3_600_000;
@@ -219,12 +218,53 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
             const headX = center + Math.cos(headAngle) * radius;
             const headY = center + Math.sin(headAngle) * radius;
 
+            // Build gradient stops from zone colours traversed
+            const gradStops: { offset: string; color: string }[] = [];
+
+            for (const zone of zones) {
+              const zoneStartMs = zone.startHour * 3_600_000;
+              const zoneEndMsActual = zone.endHour ? zone.endHour * 3_600_000 : ringScaleMs;
+
+              // Zone start/end as fraction of the ring
+              const zoneFracStart = zoneStartMs / ringScaleMs;
+              const zoneFracEnd = Math.min(zoneEndMsActual / ringScaleMs, 1);
+
+              // Only include zones that overlap with the progress arc
+              if (zoneFracStart >= progress) continue;
+              if (zoneFracEnd <= 0) continue;
+
+              const stopStart = Math.max(0, zoneFracStart / progress);
+              const stopEnd = Math.min(1, zoneFracEnd / progress);
+
+              gradStops.push({ offset: `${(stopStart * 100).toFixed(1)}%`, color: zone.color });
+              if (stopEnd < 1) {
+                gradStops.push({ offset: `${(stopEnd * 100).toFixed(1)}%`, color: zone.color });
+              }
+            }
+
+            // Gradient runs from arc start (12 o'clock) to arc end
+            const arcStartAngle = -Math.PI / 2;
+            const gx1 = center + Math.cos(arcStartAngle) * radius;
+            const gy1 = center + Math.sin(arcStartAngle) * radius;
+            const gx2 = headX;
+            const gy2 = headY;
+
             return (
               <>
-                {/* Glassy progress arc — translucent fill with specular highlight */}
+                <defs>
+                  <linearGradient id="progress-grad"
+                    x1={gx1} y1={gy1} x2={gx2} y2={gy2}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    {gradStops.map((s, i) => (
+                      <stop key={i} offset={s.offset} stopColor={s.color} />
+                    ))}
+                  </linearGradient>
+                </defs>
+                {/* Progress arc with zone gradient */}
                 <circle
                   cx={center} cy={center} r={radius} fill="none"
-                  stroke={strokeColor} strokeWidth={strokeWidth}
+                  stroke="url(#progress-grad)" strokeWidth={strokeWidth}
                   strokeDasharray={`${arcLen} ${circumference}`}
                   strokeDashoffset={0}
                   strokeLinecap="round"
