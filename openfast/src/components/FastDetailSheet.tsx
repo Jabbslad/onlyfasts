@@ -61,12 +61,12 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
 
   return (
     <div
-      className={`fixed inset-0 z-50 transition-colors duration-300 ${sheetUp ? "bg-black/80" : "bg-transparent"}`}
+      className={`fixed inset-0 z-50 transition-colors duration-300 ${sheetUp ? "bg-black/70 backdrop-blur-sm" : "bg-transparent"}`}
       onClick={onClose}
     >
       <div
         ref={sheetRef}
-        className={`absolute bottom-0 left-0 right-0 bg-black rounded-t-3xl flex flex-col transition-transform duration-300 ease-out ${sheetUp ? "translate-y-0" : "translate-y-full"}`}
+        className={`absolute bottom-0 left-0 right-0 bg-[#12121f] rounded-t-3xl flex flex-col transition-transform duration-300 ease-out ${sheetUp ? "translate-y-0" : "translate-y-full"}`}
         style={{ height: "85%" }}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
@@ -76,15 +76,15 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
       >
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-[2px] rounded-full bg-[rgba(240,240,250,0.2)]" />
+          <div className="w-10 h-1 rounded-full bg-white/20" />
         </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pb-3">
-          <h2 className="text-sm font-bold tracking-[1.17px] text-[#f0f0fa]">Fast Summary</h2>
+          <h2 className="text-white text-lg font-semibold">Fast Summary</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgba(240,240,250,0.06)] text-[#f0f0fa]/50 hover:text-[#f0f0fa] transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/[0.06] text-gray-400 hover:text-white transition-colors"
             aria-label="Close"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -107,7 +107,7 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
             {deepestZone && (
               <div className="flex justify-between items-center pt-1 border-t border-white/[0.06]">
                 <span className="text-gray-500 text-sm">Deepest zone</span>
-                <span className="text-sm font-medium text-[#f0f0fa]">
+                <span className="text-sm font-medium" style={{ color: deepestZone.zone.color }}>
                   {deepestZone.zone.name}
                 </span>
               </div>
@@ -133,12 +133,12 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
                     >
                       <div
                         className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: "#f0f0fa" }}
+                        style={{ backgroundColor: zone.color }}
                       />
                       <span className="text-sm text-white flex-1">{zone.name}</span>
                       <span className="text-xs text-gray-500">{timeLabel}</span>
                       {completed && (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0f0fa" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                           <path d="M20 6L9 17l-5-5" />
                         </svg>
                       )}
@@ -155,6 +155,7 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
               <h3 className="text-white text-xs font-semibold uppercase tracking-widest mb-3">Body impact</h3>
               <div
                 className="bg-white/[0.03] rounded-xl p-4 mb-3"
+                style={{ borderLeft: `3px solid ${deepestZone.zone.color}` }}
               >
                 <p className="text-gray-300 text-sm leading-relaxed">
                   {deepestZone.detail.summary}
@@ -168,7 +169,7 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
                   <ul className="space-y-1.5">
                     {deepestZone.detail.bodyChanges.map((change, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-400 leading-snug">
-                        <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "#f0f0fa" }} />
+                        <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: deepestZone.zone.color }} />
                         {change}
                       </li>
                     ))}
@@ -181,7 +182,7 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
                   <ul className="space-y-1.5">
                     {allBenefits.map((benefit, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-400 leading-snug">
-                        <span className="text-[#f0f0fa]/60 text-xs mt-0.5">+</span>
+                        <span className="text-green-400 text-xs mt-0.5">+</span>
                         {benefit}
                       </li>
                     ))}
@@ -194,7 +195,7 @@ export function FastDetailSheet({ open, onClose, session, onDelete }: FastDetail
           {/* Delete button */}
           <button
             onClick={() => session.id !== undefined && onDelete(session.id)}
-            className="w-full py-3.5 rounded-xl text-[#f0f0fa]/50 text-sm font-medium bg-[rgba(240,240,250,0.06)] border border-[rgba(240,240,250,0.15)] hover:bg-[rgba(240,240,250,0.1)] transition-colors min-h-[48px]"
+            className="w-full py-3.5 rounded-xl text-red-400 text-sm font-medium bg-red-500/10 border border-red-500/20 hover:bg-red-500/15 transition-colors min-h-[48px]"
           >
             Delete Fast
           </button>

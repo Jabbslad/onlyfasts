@@ -97,12 +97,12 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
 
   return (
     <div
-      className={`fixed inset-0 z-50 transition-colors duration-300 ${sheetUp ? "bg-black/80" : "bg-transparent"}`}
+      className={`fixed inset-0 z-50 transition-colors duration-300 ${sheetUp ? "bg-black/70 backdrop-blur-sm" : "bg-transparent"}`}
       onClick={onClose}
     >
       <div
         ref={dragRef}
-        className={`absolute bottom-0 left-0 right-0 bg-black rounded-t-3xl flex flex-col transition-transform duration-300 ease-out ${sheetUp ? "translate-y-0" : "translate-y-full"}`}
+        className={`absolute bottom-0 left-0 right-0 bg-[#12121f] rounded-t-3xl flex flex-col transition-transform duration-300 ease-out ${sheetUp ? "translate-y-0" : "translate-y-full"}`}
         style={{ height: "88%" }}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
@@ -112,15 +112,15 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
       >
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-[2px] rounded-full bg-[rgba(240,240,250,0.2)]" />
+          <div className="w-10 h-1 rounded-full bg-white/20" />
         </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pb-3">
-          <h2 className="text-sm font-bold tracking-[1.17px] text-[#f0f0fa]">Fasting Zones</h2>
+          <h2 className="text-white text-lg font-semibold">Fasting Zones</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgba(240,240,250,0.06)] text-[#f0f0fa]/50 hover:text-[#f0f0fa] transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/[0.06] text-gray-400 hover:text-white transition-colors"
             aria-label="Close"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -130,18 +130,20 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
         </div>
 
         {/* Tab strip */}
-        <div className="flex gap-2 px-5 pb-3 sticky top-0 z-10 bg-black">
+        <div className="flex gap-2 px-5 pb-3 sticky top-0 z-10 bg-[#12121f]">
           {zones.map((zone) => {
             const isActive = activeTab === zone.id;
             return (
               <button
                 key={zone.id}
                 onClick={() => scrollToZone(zone.id)}
-                className={`flex-1 py-1.5 rounded-full text-[10px] font-semibold tracking-wide truncate transition-all duration-200 border ${
-                  isActive
-                    ? "bg-[rgba(240,240,250,0.1)] border-[rgba(240,240,250,0.35)] text-[#f0f0fa]"
-                    : "bg-[rgba(240,240,250,0.03)] border-transparent text-[rgba(240,240,250,0.3)]"
-                }`}
+                className="flex-1 py-1.5 rounded-full text-[10px] font-semibold tracking-wide truncate transition-all duration-200"
+                style={{
+                  backgroundColor: isActive ? zone.color + "22" : "rgba(255,255,255,0.04)",
+                  color: isActive ? zone.color : "rgb(107, 114, 128)",
+                  borderWidth: 1,
+                  borderColor: isActive ? zone.color + "44" : "transparent",
+                }}
               >
                 {zone.name}
               </button>
@@ -163,32 +165,34 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
                 ref={(el) => { cardRefs.current[zone.id] = el; }}
                 data-zone-id={zone.id}
                 className={`mb-4 rounded-2xl overflow-hidden transition-opacity duration-300 ${dimmed ? "opacity-60" : ""}`}
+                style={{ borderLeft: `3px solid ${zone.color}` }}
               >
                 <div className="bg-white/[0.03] p-5">
                   {/* Zone header */}
                   <div className="flex items-center gap-2.5 mb-3">
-                    <span className="text-base font-bold text-[#f0f0fa]">{zone.name}</span>
+                    <span className="text-base font-bold" style={{ color: zone.color }}>{zone.name}</span>
                     <span
-                      className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[rgba(240,240,250,0.08)] text-[rgba(240,240,250,0.5)]"
+                      className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: zone.color + "1a", color: zone.color }}
                     >
                       {hourRange}
                     </span>
                     {status === "current" && (
-                      <span className="flex items-center gap-1.5 text-[10px] font-semibold text-[#f0f0fa] ml-auto">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#f0f0fa] animate-pulse" />
+                      <span className="flex items-center gap-1.5 text-[10px] font-semibold text-green-400 ml-auto">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                         Current
                       </span>
                     )}
                     {status === "past" && (
                       <span className="text-[10px] text-gray-500 ml-auto">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f0f0fa" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-0.5 mr-0.5">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-0.5 mr-0.5">
                           <path d="M20 6L9 17l-5-5" />
                         </svg>
                         Complete
                       </span>
                     )}
                     {status === "upcoming" && (
-                      <span className="text-[10px] text-[#f0f0fa]/30 ml-auto">Upcoming</span>
+                      <span className="text-[10px] text-gray-600 ml-auto">Upcoming</span>
                     )}
                   </div>
 
@@ -200,7 +204,8 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
                           className="h-full rounded-full transition-all duration-1000"
                           style={{
                             width: `${getZoneProgress(elapsedMs) * 100}%`,
-                            backgroundColor: "#f0f0fa",
+                            backgroundColor: zone.color,
+                            boxShadow: `0 0 8px ${zone.glowColor}`,
                           }}
                         />
                       </div>
@@ -208,15 +213,15 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
                   )}
 
                   {/* Summary */}
-                  <p className="text-[#f0f0fa]/50 text-sm leading-relaxed mb-4">{detail.summary}</p>
+                  <p className="text-gray-300 text-sm leading-relaxed mb-4">{detail.summary}</p>
 
                   {/* What's happening */}
                   <div className="mb-4">
-                    <h4 className="text-[#f0f0fa]/40 text-xs font-semibold uppercase tracking-widest mb-2">What's happening</h4>
+                    <h4 className="text-white text-xs font-semibold uppercase tracking-widest mb-2">What's happening</h4>
                     <ul className="space-y-1.5">
                       {detail.bodyChanges.map((change, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-[#f0f0fa]/50 leading-snug">
-                          <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "#f0f0fa" }} />
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-400 leading-snug">
+                          <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: zone.color }} />
                           {change}
                         </li>
                       ))}
@@ -225,11 +230,11 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
 
                   {/* Benefits */}
                   <div className="mb-4">
-                    <h4 className="text-[#f0f0fa]/40 text-xs font-semibold uppercase tracking-widest mb-2">Benefits</h4>
+                    <h4 className="text-white text-xs font-semibold uppercase tracking-widest mb-2">Benefits</h4>
                     <ul className="space-y-1.5">
                       {detail.benefits.map((benefit, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-[#f0f0fa]/50 leading-snug">
-                          <span className="text-[#f0f0fa]/60 text-xs mt-0.5">+</span>
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-400 leading-snug">
+                          <span className="text-green-400 text-xs mt-0.5">+</span>
                           {benefit}
                         </li>
                       ))}
@@ -238,8 +243,8 @@ export function ZoneExplorer({ open, onClose, currentZoneId, initialZoneId, elap
 
                   {/* Tip */}
                   <div className="bg-white/[0.03] rounded-xl p-3.5 flex gap-2.5 items-start">
-                    <span className="text-base leading-none mt-0.5">&mdash;</span>
-                    <p className="text-xs text-[#f0f0fa]/50 leading-relaxed">{detail.tip}</p>
+                    <span className="text-base leading-none mt-0.5">💡</span>
+                    <p className="text-xs text-gray-400 leading-relaxed">{detail.tip}</p>
                   </div>
                 </div>
               </div>

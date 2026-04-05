@@ -26,17 +26,17 @@ describe("SlideToEnd", () => {
     expect(onComplete).toHaveBeenCalled();
   });
 
-  it("renders thumb by default", () => {
+  it("renders indigo thumb by default", () => {
     render(<SlideToEnd onComplete={() => {}} />);
     const slider = screen.getByRole("slider");
-    const thumb = slider.querySelector("[class*='bg-[rgba(240,240,250,0.2)]']");
+    const thumb = slider.querySelector("[class*='bg-indigo-500']");
     expect(thumb).toBeInTheDocument();
   });
 
-  it("renders brighter thumb when goalReached", () => {
+  it("renders emerald thumb when goalReached", () => {
     render(<SlideToEnd onComplete={() => {}} goalReached />);
     const slider = screen.getByRole("slider");
-    const thumb = slider.querySelector("[class*='bg-[rgba(240,240,250,0.4)]']");
+    const thumb = slider.querySelector("[class*='bg-emerald-500']");
     expect(thumb).toBeInTheDocument();
   });
 });

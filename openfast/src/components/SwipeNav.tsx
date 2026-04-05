@@ -56,10 +56,10 @@ export function SwipeNav({ children, initialIndex = 1, onSettingsTap }: SwipeNav
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Top bar: dots + gear icon */}
-      <div className="shrink-0 bg-black z-10">
+      <div className="shrink-0 bg-[#0f0f1a] z-10">
         <div className="flex items-center justify-between px-4 py-2">
           {/* Screen label */}
-          <span className="text-[#f0f0fa]/60 text-xs font-bold tracking-[1.17px] w-16">
+          <span className="text-white/60 text-xs font-medium tracking-wide w-16">
             {labels[activeIndex] ?? ""}
           </span>
 
@@ -71,8 +71,8 @@ export function SwipeNav({ children, initialIndex = 1, onSettingsTap }: SwipeNav
                 onClick={() => scrollToIndex(i)}
                 className={`rounded-full transition-all duration-300 ${
                   i === activeIndex
-                    ? "w-2 h-2 bg-[#f0f0fa]"
-                    : "w-1.5 h-1.5 bg-[rgba(240,240,250,0.2)]"
+                    ? "w-2 h-2 bg-indigo-400"
+                    : "w-1.5 h-1.5 bg-white/20"
                 }`}
                 aria-label={`Go to ${labels[i]}`}
               />
@@ -82,7 +82,7 @@ export function SwipeNav({ children, initialIndex = 1, onSettingsTap }: SwipeNav
           {/* Settings gear */}
           <button
             onClick={onSettingsTap}
-            className="w-8 h-8 flex items-center justify-center text-[#f0f0fa]/35 hover:text-[#f0f0fa] transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-300 transition-colors"
             aria-label="Settings"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

@@ -6,16 +6,6 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
-    version: "0.5.0",
-    date: "2026-04-05",
-    changes: [
-      "Complete visual restyle to SpaceX-inspired design system — pure black background, spectral white text, Barlow industrial typeface, universal uppercase with letter-spacing",
-      "Monochrome fasting zones — stages differentiated by brightness (opacity scale) instead of colours, creating a spacecraft instrument aesthetic",
-      "Ghost button design language — all interactive elements use translucent spectral surfaces with subtle borders",
-      "Removed all colour accents, shadows, gradients, and decorative elements — achromatic palette throughout",
-    ],
-  },
-  {
     version: "0.4.0",
     date: "2026-04-05",
     changes: [

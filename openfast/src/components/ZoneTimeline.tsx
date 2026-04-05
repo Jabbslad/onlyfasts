@@ -28,15 +28,15 @@ export function ZoneTimeline({ elapsedMs, onZoneTap }: ZoneTimelineProps) {
               type="button"
               onClick={() => onZoneTap?.(zone.id)}
               className="flex-1 rounded-full overflow-hidden"
-              style={{ backgroundColor: "rgba(240,240,250,0.06)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
               aria-label={zone.name}
             >
               <div
                 className="h-full rounded-full transition-all duration-1000 pointer-events-none"
                 style={{
                   width: `${fillPercent}%`,
-                  backgroundColor: "#f0f0fa",
-                  opacity: isPast ? zone.opacity * 0.7 : zone.opacity,
+                  backgroundColor: zone.color,
+                  boxShadow: isCurrent ? `0 0 6px ${zone.glowColor}` : undefined,
                 }}
               />
             </button>
@@ -53,7 +53,7 @@ export function ZoneTimeline({ elapsedMs, onZoneTap }: ZoneTimelineProps) {
               type="button"
               onClick={() => onZoneTap?.(zone.id)}
               className="flex-1 text-center text-[11px] font-medium truncate transition-colors duration-300"
-              style={{ color: isCurrent ? "rgba(240,240,250,0.7)" : "rgba(240,240,250,0.25)" }}
+              style={{ color: isCurrent ? zone.color : "rgb(75, 85, 99)" }}
             >
               {zone.name}
             </button>

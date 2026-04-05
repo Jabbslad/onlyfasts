@@ -5,11 +5,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        space: "#000000",
-        spectral: "#f0f0fa",
-      },
-      fontFamily: {
-        sans: ["Barlow", "system-ui", "sans-serif"],
+        navy: {
+          900: "#0f0f1a",
+          800: "#1a1a2e",
+          700: "#2a2a4a",
+        },
       },
     },
   },
