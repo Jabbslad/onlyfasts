@@ -177,35 +177,33 @@ export function TimerScreen() {
 
   return (
     <div className="h-full flex flex-col items-center bg-transparent px-6">
-      {/* Top spacer — pushes ring down from the top */}
-      <div className="flex-[2]" />
+      {/* Ring — fixed position from top, never moves */}
+      <div className="pt-8 pb-4">
+        <ProgressRing
+          elapsedMs={isActive ? elapsedMs : 0}
+          targetMs={targetMs}
+          size={300}
+          zoneColor={zone?.color}
+          zoneGlowColor={zone?.glowColor}
+          protocolName={protocol?.name}
+          streakCount={streakCount}
+        />
+      </div>
 
-      <ProgressRing
-        elapsedMs={isActive ? elapsedMs : 0}
-        targetMs={targetMs}
-        size={300}
-        zoneColor={zone?.color}
-        zoneGlowColor={zone?.glowColor}
-        protocolName={protocol?.name}
-        streakCount={streakCount}
-      />
+      {/* Zone timeline — always present below ring (invisible spacer when idle) */}
+      <div className={isActive ? "" : "invisible"}>
+        <ZoneTimeline elapsedMs={elapsedMs} onZoneTap={(id) => openExplorer(id)} />
+      </div>
 
-      {/* Middle spacer — separates ring from controls */}
-      <div className="flex-[1]" />
+      {/* Spacer — pushes controls to the bottom */}
+      <div className="flex-1" />
 
+      {/* Bottom controls */}
       {isActive ? (
         <>
-          <ZoneTimeline elapsedMs={elapsedMs} onZoneTap={(id) => openExplorer(id)} />
-
-          {/* Spacer — pushes controls to the bottom */}
-          <div className="flex-1" />
-
-          {/* Slide to end */}
           <div className="w-full max-w-sm px-2">
             <SlideToEnd onComplete={handleEnd} goalReached={elapsedMs >= targetMs && targetMs > 0} />
           </div>
-
-          {/* Started-at — quiet metadata docked above tab bar */}
           <button
             onClick={() => setEditStartOpen(true)}
             className="mt-3 mb-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors"
