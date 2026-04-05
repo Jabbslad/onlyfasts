@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-OpenFast is a privacy-first intermittent fasting tracker PWA. All data stays on-device via IndexedDB (Dexie). No server, no accounts, fully offline.
+OnlyFasts is a privacy-first intermittent fasting tracker PWA. All data stays on-device via IndexedDB (Dexie). No server, no accounts, fully offline.
 
 The app code lives in `openfast/` — all commands should be run from that directory.
 

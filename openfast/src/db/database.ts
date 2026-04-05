@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { FastingSession, MealLog, HydrationEntry, Streak, Badge, UserProfile } from "../types";
 
-class OpenFastDB extends Dexie {
+class OnlyFastsDB extends Dexie {
   fastingSessions!: EntityTable<FastingSession, "id">;
   mealLogs!: EntityTable<MealLog, "id">;
   hydrationEntries!: EntityTable<HydrationEntry, "id">;
@@ -10,7 +10,7 @@ class OpenFastDB extends Dexie {
   userProfile!: EntityTable<UserProfile, "id">;
 
   constructor() {
-    super("openfast");
+    super("onlyfasts");
     this.version(1).stores({
       fastingSessions: "++id, startTime, status",
       mealLogs: "++id, timestamp",
@@ -22,4 +22,4 @@ class OpenFastDB extends Dexie {
   }
 }
 
-export const db = new OpenFastDB();
+export const db = new OnlyFastsDB();

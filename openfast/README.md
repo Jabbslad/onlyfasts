@@ -1,4 +1,4 @@
-# OpenFast
+# OnlyFasts
 
 A privacy-first fasting and wellness tracker that runs entirely in your browser.
 
@@ -17,8 +17,8 @@ A privacy-first fasting and wellness tracker that runs entirely in your browser.
 ## Quick Start
 
 ```bash
-git clone https://github.com/openfast/openfast.git
-cd openfast
+git clone https://github.com/Jabbslad/onlyfasts.git
+cd onlyfasts
 npm install
 npm run dev
 ```

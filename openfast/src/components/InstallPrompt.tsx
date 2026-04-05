@@ -13,14 +13,14 @@ export function InstallPrompt() {
     if (isStandalone) return;
 
     // Don't show if user previously dismissed
-    const dismissed = localStorage.getItem("openfast-install-dismissed");
+    const dismissed = localStorage.getItem("onlyfasts-install-dismissed");
     if (dismissed) return;
 
     // Show after a short delay so it doesn't flash on load
     const timer = setTimeout(() => setVisible(true), 3000);
 
     const onInstalled = () => {
-      localStorage.setItem("openfast-install-dismissed", "1");
+      localStorage.setItem("onlyfasts-install-dismissed", "1");
       setVisible(false);
     };
     window.addEventListener("appinstalled", onInstalled);
@@ -32,7 +32,7 @@ export function InstallPrompt() {
   }, []);
 
   function dismiss() {
-    localStorage.setItem("openfast-install-dismissed", "1");
+    localStorage.setItem("onlyfasts-install-dismissed", "1");
     setVisible(false);
   }
 
@@ -47,7 +47,7 @@ export function InstallPrompt() {
       <div className="bg-[#1a1a2e] border border-white/[0.08] rounded-2xl p-4 shadow-2xl shadow-black/50">
         <div className="flex items-start gap-3">
           <div className="flex-1">
-            <p className="text-white text-sm font-semibold">Install OpenFast</p>
+            <p className="text-white text-sm font-semibold">Install OnlyFasts</p>
             {isIOS ? (
               <p className="text-gray-400 text-xs mt-1">
                 Tap{" "}

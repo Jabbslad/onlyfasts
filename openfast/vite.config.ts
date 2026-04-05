@@ -22,8 +22,8 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       manifest: {
-        name: "OpenFast",
-        short_name: "OpenFast",
+        name: "OnlyFasts",
+        short_name: "OnlyFasts",
         description: "Privacy-first fasting & wellness tracker",
         theme_color: "#0f0f1a",
         background_color: "#0f0f1a",

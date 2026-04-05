@@ -40,7 +40,7 @@ export function LandscapeOverlay() {
         Please rotate your device to portrait
       </p>
       <p className="text-gray-500 text-sm text-center">
-        OpenFast is designed for portrait orientation
+        OnlyFasts is designed for portrait orientation
       </p>
     </div>
   );

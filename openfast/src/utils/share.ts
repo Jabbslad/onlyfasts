@@ -10,7 +10,7 @@ export async function shareFastResult(opts: {
   if (!canShare()) return false;
   try {
     await navigator.share({
-      title: "OpenFast",
+      title: "OnlyFasts",
       text: `I just completed a ${opts.protocol} fast (${opts.durationLabel}) and reached the ${opts.zone} zone!`,
     });
     return true;
@@ -23,8 +23,8 @@ export async function shareStreak(count: number): Promise<boolean> {
   if (!canShare()) return false;
   try {
     await navigator.share({
-      title: "OpenFast",
-      text: `I'm on a ${count}-day fasting streak with OpenFast!`,
+      title: "OnlyFasts",
+      text: `I'm on a ${count}-day fasting streak with OnlyFasts!`,
     });
     return true;
   } catch {

@@ -80,7 +80,7 @@ export function SettingsScreen({ onNavigateGuides }: SettingsScreenProps = {}) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "openfast-backup.json";
+    a.download = "onlyfasts-backup.json";
     a.click();
     URL.revokeObjectURL(url);
   }
