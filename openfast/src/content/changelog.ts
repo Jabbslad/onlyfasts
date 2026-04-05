@@ -19,6 +19,13 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
+    version: "0.1.4",
+    date: "2026-04-05",
+    changes: [
+      "New guide: Does Weight or Gender Affect Fasting Stages? — explains how body composition and sex influence zone timings",
+    ],
+  },
+  {
     version: "0.1.3",
     date: "2026-04-05",
     changes: [
