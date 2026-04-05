@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.3.3",
+    date: "2026-04-05",
+    changes: [
+      "Fixed tab bar positioning on iOS PWA — reverted to proven layout strategy that keeps the tab bar flush to the screen bottom",
+    ],
+  },
+  {
     version: "0.3.2",
     date: "2026-04-05",
     changes: [

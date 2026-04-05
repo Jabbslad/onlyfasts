@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 html {
-  height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
   /* Match tab bar bg so the iOS home indicator area is seamless */
@@ -14,24 +13,19 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
     system-ui, "Segoe UI", Roboto, sans-serif;
   margin: 0;
-  height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #0f0f1a;
   color: #fff;
+  position: fixed;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
 }
 
 #root {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* iOS standalone PWA: fixed bottom:0 clips to the safe-area boundary,
-     not the physical screen edge (WebKit #237961). Offset by the inset
-     so the tab bar background extends behind the home indicator. */
-  bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
