@@ -190,21 +190,18 @@ export function TimerScreen() {
           </button>
         </>
       ) : (
-        <>
-          <div className="flex-1" />
-          <div className="flex flex-col items-center gap-3 mb-6">
-            <button onClick={handleStart}
-              className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
-              Start Fast
-            </button>
-            <button
-              onClick={() => openExplorer()}
-              className="text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors"
-            >
-              Explore Fasting Zones &rarr;
-            </button>
-          </div>
-        </>
+        <div className="flex flex-col items-center gap-3 mb-6">
+          <button onClick={handleStart}
+            className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
+            Start Fast
+          </button>
+          <button
+            onClick={() => openExplorer()}
+            className="text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors"
+          >
+            Explore Fasting Zones &rarr;
+          </button>
+        </div>
       )}
 
       <ZoneExplorer
