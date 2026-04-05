@@ -8,7 +8,8 @@ import { ZONE_NOTIFICATIONS } from "../../content/zone-notifications";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import type { UserProfile } from "../../types";
 
-const VERSION = "0.1.0";
+declare const __APP_VERSION__: string;
+const VERSION = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.1.0-dev";
 
 export function SettingsScreen() {
   const navigate = useNavigate();
