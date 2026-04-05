@@ -226,6 +226,57 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
 
       <path d={glassPath} fill="url(#glass-shine)" stroke="none" />
 
+      {/* Straw drawn BEFORE water so the water overlays the submerged portion */}
+      {showStraw && (() => {
+        const sw = 6; // straw width
+        // Straw body: leaning from near the base to the right rim
+        const rimX = cx + topWidth / 2 - 10;
+        const rimY = bodyTop;
+        const btmX = cx + 2;
+        const btmY = bodyBottom - 6;
+        // Bendy section: corrugated bend at the rim, then top tilts down-right
+        const bendBottomX = rimX;
+        const bendBottomY = rimY;
+        const bendTopX = rimX - 2;
+        const bendTopY = rimY - 8;
+        // Top section angles outward and tilts downward
+        const tipX = rimX + 16;
+        const tipY = rimY - 18;
+
+        return (
+          <g transform={`translate(0, ${strawY})`}>
+            <defs>
+              <pattern id="straw-stripes" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(-30)">
+                <rect width="8" height="8" fill="white" />
+                <rect width="4" height="8" fill="#ef4444" />
+              </pattern>
+            </defs>
+            {/* Lower straw body — rim to bottom of glass */}
+            <line x1={rimX} y1={rimY} x2={btmX} y2={btmY}
+              stroke="url(#straw-stripes)" strokeWidth={sw} strokeLinecap="round" />
+            {/* Corrugated bend section — short ridged segment at the rim */}
+            <line x1={bendTopX} y1={bendTopY} x2={bendBottomX} y2={bendBottomY}
+              stroke="url(#straw-stripes)" strokeWidth={sw} strokeLinecap="butt" />
+            {/* Bend ridges — small horizontal lines to suggest corrugation */}
+            {[0, 0.25, 0.5, 0.75, 1].map((t, i) => {
+              const ry = bendTopY + (bendBottomY - bendTopY) * t;
+              const rx = bendTopX + (bendBottomX - bendTopX) * t;
+              return (
+                <line key={i}
+                  x1={rx - sw / 2 - 0.5} y1={ry}
+                  x2={rx + sw / 2 + 0.5} y2={ry}
+                  stroke="rgba(0,0,0,0.15)" strokeWidth={0.75}
+                />
+              );
+            })}
+            {/* Top section — tilts outward and slightly downward */}
+            <line x1={bendTopX} y1={bendTopY} x2={tipX} y2={tipY}
+              stroke="url(#straw-stripes)" strokeWidth={sw} strokeLinecap="round" />
+          </g>
+        );
+      })()}
+
+      {/* Water fill — renders ON TOP of the straw so submerged part is tinted */}
       {displayFill > 0 && (
         <g clipPath="url(#glass-clip)">
           <path d={waterPath} fill="url(#water-fill)" />
@@ -247,6 +298,7 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
         </g>
       )}
 
+      {/* Glass outline — on top of everything */}
       <path
         d={glassPath}
         stroke="rgba(255,255,255,0.25)"
@@ -265,62 +317,6 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
         strokeWidth="2"
         strokeLinecap="round"
       />
-
-      {/* Drinking straw — drops in when goal is reached */}
-      {showStraw && (() => {
-        // Straw rests leaning against the right rim, angled into the glass
-        // Top touches the rim, bottom rests near the base
-        const rimContactX = cx + topWidth / 2 - 12;
-        const rimContactY = bodyTop;
-        const strawBottomX = cx + 4;
-        const strawBottomY = bodyBottom - 8;
-        // Bent portion extends above the rim
-        const bendX = rimContactX + 8;
-        const bendY = rimContactY - 22;
-
-        return (
-          <g transform={`translate(0, ${strawY})`}>
-            <defs>
-              <pattern id="straw-stripes" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-30)">
-                <rect width="7" height="7" fill="white" />
-                <rect width="3.5" height="7" fill="#ef4444" />
-              </pattern>
-              {/* Clip for submerged portion — everything below water surface */}
-              <clipPath id="straw-underwater">
-                <rect x={0} y={waterTop} width={viewW} height={bodyBottom - waterTop + 10} />
-              </clipPath>
-            </defs>
-
-            {/* Straw body above water — normal stripes */}
-            <line
-              x1={rimContactX} y1={rimContactY}
-              x2={strawBottomX} y2={strawBottomY}
-              stroke="url(#straw-stripes)" strokeWidth="4.5" strokeLinecap="round"
-            />
-            {/* Bent top above rim */}
-            <line
-              x1={bendX} y1={bendY}
-              x2={rimContactX} y2={rimContactY}
-              stroke="url(#straw-stripes)" strokeWidth="4.5" strokeLinecap="round"
-            />
-
-            {/* Submerged straw — same shape but tinted by water */}
-            <g clipPath="url(#straw-underwater)" opacity={0.7}>
-              <line
-                x1={rimContactX} y1={rimContactY}
-                x2={strawBottomX} y2={strawBottomY}
-                stroke="url(#straw-stripes)" strokeWidth="4.5" strokeLinecap="round"
-              />
-              {/* Water tint overlay on submerged portion */}
-              <line
-                x1={rimContactX} y1={rimContactY}
-                x2={strawBottomX} y2={strawBottomY}
-                stroke="#0ea5e9" strokeWidth="4.5" strokeLinecap="round" opacity={0.3}
-              />
-            </g>
-          </g>
-        );
-      })()}
     </svg>
   );
 }
