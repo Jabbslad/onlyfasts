@@ -221,39 +221,42 @@ export function TimerScreen() {
           </button>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-5 w-full max-w-sm">
-          {/* Protocol picker */}
-          <div className="w-full">
-            <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-hide">
-              {PROTOCOLS.map((p) => {
-                const isSelected = p.id === protocolId;
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => handleSelectProtocol(p.id)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 min-h-[44px] ${
-                      isSelected
-                        ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25"
-                        : "bg-white/[0.06] text-gray-400 hover:bg-white/[0.1] hover:text-gray-200"
-                    }`}
-                  >
+        <div className="flex flex-col items-center gap-5 w-full max-w-sm px-2">
+          {/* Protocol grid */}
+          <div className="grid grid-cols-3 gap-2 w-full">
+            {PROTOCOLS.map((p) => {
+              const isSelected = p.id === protocolId;
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => handleSelectProtocol(p.id)}
+                  className={`flex flex-col items-center justify-center py-3 rounded-xl transition-all duration-200 min-h-[60px] ${
+                    isSelected
+                      ? "bg-indigo-500/15 border-2 border-indigo-400 shadow-lg shadow-indigo-500/20"
+                      : "bg-white/[0.04] border-2 border-transparent hover:bg-white/[0.08]"
+                  }`}
+                >
+                  <span className={`text-sm font-bold ${isSelected ? "text-indigo-400" : "text-gray-300"}`}>
                     {p.name}
-                  </button>
-                );
-              })}
-            </div>
-            {/* Selected protocol description */}
-            {protocol && (
-              <div className="text-center mt-3">
-                <span className="text-gray-400 text-xs">
-                  {protocol.isWeekly
-                    ? "Fast 2 days per week"
-                    : `${protocol.fastingHours}h fasting · ${protocol.eatingHours}h eating`}
-                </span>
-                <span className="text-gray-600 text-xs ml-2">({protocol.category})</span>
-              </div>
-            )}
+                  </span>
+                  <span className={`text-[10px] mt-0.5 ${isSelected ? "text-indigo-400/60" : "text-gray-600"}`}>
+                    {p.isWeekly ? "Weekly" : `${p.fastingHours}h fast`}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+
+          {/* Selected protocol description */}
+          {protocol && (
+            <div className="text-center">
+              <span className="text-gray-400 text-sm">
+                {protocol.isWeekly
+                  ? "Fast 2 days per week"
+                  : `${protocol.fastingHours}h fasting · ${protocol.eatingHours}h eating`}
+              </span>
+            </div>
+          )}
 
           {/* Start button */}
           <button onClick={handleStart}
