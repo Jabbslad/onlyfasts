@@ -55,7 +55,7 @@ export default function App() {
       <InstallPrompt />
       <LandscapeOverlay />
       <div className="flex flex-col h-[100dvh] bg-navy-900 text-white overflow-hidden">
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main className="flex-1 flex flex-col overflow-hidden pt-[env(safe-area-inset-top)]">
           <Routes>
             <Route path="/" element={<TimerScreen />} />
             <Route path="/hydration" element={<HydrationScreen />} />
