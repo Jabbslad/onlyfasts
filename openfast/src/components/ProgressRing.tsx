@@ -1,6 +1,5 @@
 import { formatDuration } from "../utils/time";
-import { getAllZones } from "../utils/zones";
-import type { FastingZone } from "../types";
+import { getAllZones, getZoneForElapsedMs } from "../utils/zones";
 
 interface ProgressRingProps {
   elapsedMs: number;
@@ -10,12 +9,6 @@ interface ProgressRingProps {
   zoneGlowColor?: string;
   protocolName?: string;
   streakCount?: number;
-}
-
-interface ZoneMarker {
-  zone: FastingZone;
-  angle: number;
-  isPastGoal: boolean;
 }
 
 function getRingScale(targetMs: number): number {
@@ -31,20 +24,15 @@ function getRingScale(targetMs: number): number {
   return Math.max(targetMs, maxBoundaryMs) * 1.15;
 }
 
-function getZoneMarkers(targetMs: number, ringScaleMs: number): ZoneMarker[] {
-  if (targetMs <= 0) return [];
-  const zones = getAllZones();
-  const markers: ZoneMarker[] = [];
-
-  for (const zone of zones) {
-    if (zone.startHour === 0) continue;
-    const zoneStartMs = zone.startHour * 3_600_000;
-    const fraction = zoneStartMs / ringScaleMs;
-    if (fraction > 1) continue;
-    const angle = fraction * 2 * Math.PI - Math.PI / 2;
-    markers.push({ zone, angle, isPastGoal: zoneStartMs > targetMs });
-  }
-  return markers;
+// Generate an SVG arc path for textPath to follow
+function describeArc(cx: number, cy: number, r: number, startAngle: number, endAngle: number): string {
+  const x1 = cx + Math.cos(startAngle) * r;
+  const y1 = cy + Math.sin(startAngle) * r;
+  const x2 = cx + Math.cos(endAngle) * r;
+  const y2 = cy + Math.sin(endAngle) * r;
+  const sweep = endAngle - startAngle;
+  const largeArc = sweep > Math.PI ? 1 : 0;
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
 }
 
 export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneGlowColor, protocolName, streakCount }: ProgressRingProps) {
@@ -57,68 +45,15 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
   const strokeColor = goalReached ? "#4ade80" : (zoneColor ?? "#818cf8");
   const glowColor = goalReached ? "rgba(74, 222, 128, 0.3)" : (zoneGlowColor ?? "rgba(129, 140, 248, 0.25)");
   const center = size / 2;
-  const markers = getZoneMarkers(targetMs, ringScaleMs);
   const elapsedHours = elapsedMs / 3_600_000;
+  const currentZone = getZoneForElapsedMs(elapsedMs);
+  const zones = getAllZones();
 
-  const goalFraction = targetMs / ringScaleMs;
-  const goalAngle = goalFraction * 2 * Math.PI - Math.PI / 2;
-  const goalMatchesZone = markers.some(
-    (m) => Math.abs(m.zone.startHour * 3_600_000 - targetMs) < 60_000
-  );
-
-  const padding = 56;
+  const padding = 12;
   const fullSize = size + padding * 2;
 
-  function markerLabel(angle: number, label: string, sublabel: string, color: string, dimmed: boolean) {
-    // Position label outside ring with a thin hairline connecting to the dot
-    const dotRadius = radius + strokeWidth / 2 + 1;
-    const dx = center + Math.cos(angle) * dotRadius;
-    const dy = center + Math.sin(angle) * dotRadius;
-
-    const lineEnd = radius + strokeWidth / 2 + 10;
-    const ex = center + Math.cos(angle) * lineEnd;
-    const ey = center + Math.sin(angle) * lineEnd;
-
-    const labelDist = radius + strokeWidth / 2 + 14;
-    const lx = center + Math.cos(angle) * labelDist;
-    const ly = center + Math.sin(angle) * labelDist;
-
-    const angleDeg = ((angle + Math.PI / 2) * 180) / Math.PI;
-    let anchor: "start" | "middle" | "end" = "middle";
-    if (angleDeg > 20 && angleDeg < 160) anchor = "start";
-    else if (angleDeg > 200 && angleDeg < 340) anchor = "end";
-
-    const op = dimmed ? 0.3 : 0.7;
-
-    return (
-      <g>
-        {/* Small dot on the ring edge */}
-        <circle cx={dx} cy={dy} r={2} fill={color} opacity={op} />
-        {/* Thin hairline from dot to label */}
-        <line x1={dx} y1={dy} x2={ex} y2={ey}
-          stroke={color} strokeWidth={0.75} opacity={op * 0.6} />
-        {/* Zone name */}
-        <text
-          x={lx} y={ly - 5}
-          fill={color} fontSize="9" fontWeight="500" fontFamily="system-ui, sans-serif"
-          textAnchor={anchor} dominantBaseline="central"
-          opacity={op}
-          letterSpacing="0.3"
-        >
-          {label}
-        </text>
-        {/* Hour sublabel */}
-        <text
-          x={lx} y={ly + 6}
-          fill={color} fontSize="8" fontWeight="400" fontFamily="system-ui, sans-serif"
-          textAnchor={anchor} dominantBaseline="central"
-          opacity={op * 0.6}
-        >
-          {sublabel}
-        </text>
-      </g>
-    );
-  }
+  // Gap between segments in circumference units
+  const gapLen = 3;
 
   return (
     <div
@@ -141,8 +76,65 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
           </filter>
         </defs>
         <g transform={`translate(${padding}, ${padding})`}>
-          {/* Track */}
-          <circle cx={center} cy={center} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
+          {/* Zone segments on the track */}
+          {zones.map((zone) => {
+            const startFrac = (zone.startHour * 3_600_000) / ringScaleMs;
+            const rawEndFrac = zone.endHour
+              ? (zone.endHour * 3_600_000) / ringScaleMs
+              : 1;
+            const endFrac = Math.min(rawEndFrac, 1);
+            if (startFrac >= 1) return null;
+
+            const segmentLen = (endFrac - startFrac) * circumference;
+            if (segmentLen < 2) return null;
+
+            // Draw the segment arc using strokeDasharray
+            const dashLen = Math.max(0, segmentLen - gapLen);
+            const dashOffset = -(startFrac * circumference);
+
+            const isPast = elapsedHours >= (zone.endHour ?? Infinity);
+            const isCurrent = zone.id === currentZone.id && elapsedMs > 0;
+
+            // Arc path for curved text — offset inward to visually center within the stroke
+            const startAng = startFrac * 2 * Math.PI - Math.PI / 2;
+            const endAng = endFrac * 2 * Math.PI - Math.PI / 2;
+            const textRadius = radius + 1;
+            const textPath = describeArc(center, center, textRadius, startAng, endAng);
+
+            return (
+              <g key={zone.id}>
+                {/* Colored segment */}
+                <circle
+                  cx={center} cy={center} r={radius} fill="none"
+                  stroke={zone.color}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={`${dashLen} ${circumference - dashLen}`}
+                  strokeDashoffset={dashOffset}
+                  transform={`rotate(-90 ${center} ${center})`}
+                  opacity={isCurrent ? 0.25 : isPast ? 0.12 : 0.07}
+                />
+                {/* Curved zone name */}
+                <path id={`zp-${zone.id}`} d={textPath} fill="none" stroke="none" />
+                <text>
+                  <textPath
+                    href={`#zp-${zone.id}`}
+                    startOffset="50%"
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill={zone.color}
+                    fontSize="11"
+                    fontWeight="700"
+                    fontFamily="system-ui, sans-serif"
+                    letterSpacing="1.5"
+                    opacity={isCurrent ? 0.7 : isPast ? 0.4 : 0.25}
+                  >
+                    {zone.name}
+                  </textPath>
+                </text>
+              </g>
+            );
+          })}
+
           {/* Progress arc */}
           {progress > 0 && (() => {
             const arcLen = circumference * progress;
@@ -152,7 +144,6 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
 
             return (
               <>
-                {/* Solid arc */}
                 <circle
                   cx={center} cy={center} r={radius} fill="none"
                   stroke={strokeColor} strokeWidth={strokeWidth}
@@ -162,7 +153,7 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
                   transform={`rotate(-90 ${center} ${center})`}
                   style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
                 />
-                {/* Subtle bright cap at leading edge — a small white-tinted glow */}
+                {/* Subtle bright cap at leading edge */}
                 <circle
                   cx={headX} cy={headY}
                   r={strokeWidth / 2 - 2}
@@ -173,17 +164,6 @@ export function ProgressRing({ elapsedMs, targetMs, size = 300, zoneColor, zoneG
               </>
             );
           })()}
-          {/* Goal marker */}
-          {!goalMatchesZone && markerLabel(goalAngle, "Goal", formatDuration(targetMs), "#4ade80", false)}
-          {/* Zone markers */}
-          {markers.map((m) => {
-            const dimmed = m.isPastGoal && m.zone.startHour > elapsedHours + 1;
-            return (
-              <g key={m.zone.id}>
-                {markerLabel(m.angle, m.zone.name, `${m.zone.startHour}h`, m.zone.color, dimmed)}
-              </g>
-            );
-          })}
         </g>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

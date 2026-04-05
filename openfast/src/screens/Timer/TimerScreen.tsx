@@ -4,9 +4,10 @@ import { startFast, endFast, cancelFast, getActiveFast, updateFastStartTime } fr
 import { evaluateFastingStreak, getStreak } from "../../hooks/useStreaks";
 import { evaluateBadges } from "../../hooks/useBadges";
 import { getProtocol, getTargetDurationMs } from "../../utils/protocols";
-import { sendNotification } from "../../utils/notifications";
+import { sendNotification, requestPermission } from "../../utils/notifications";
 import { formatTime } from "../../utils/time";
 import { getZoneForElapsedMs } from "../../utils/zones";
+import { ZONE_NOTIFICATIONS } from "../../content/zone-notifications";
 import { ZoneTimeline } from "../../components/ZoneTimeline";
 import { ZoneExplorer } from "../../components/ZoneExplorer";
 import { EditStartTimeSheet } from "../../components/EditStartTimeSheet";
@@ -22,6 +23,7 @@ export function TimerScreen() {
   const [streakCount, setStreakCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const notifiedRef = useRef(false);
+  const lastZoneRef = useRef<string | null>(null);
 
   const [explorerOpen, setExplorerOpen] = useState(false);
   const [explorerInitialZone, setExplorerInitialZone] = useState<string | undefined>();
@@ -68,17 +70,33 @@ export function TimerScreen() {
     const targetMs = getTargetDurationMs(activeFast.protocol);
     if (targetMs > 0 && elapsedMs >= targetMs && !notifiedRef.current) {
       notifiedRef.current = true;
-      sendNotification("Goal Reached!", `You've completed your ${activeFast.protocol} fast!`);
+      sendNotification("\ud83c\udfaf Goal Reached!", `You've completed your ${activeFast.protocol} fast! Incredible work.`);
     }
   }, [elapsedMs, activeFast, profile]);
 
+  // Send notification on zone transitions
+  useEffect(() => {
+    if (!activeFast || elapsedMs === 0) return;
+    const currentZone = getZoneForElapsedMs(elapsedMs);
+    if (lastZoneRef.current && lastZoneRef.current !== currentZone.id) {
+      const notif = ZONE_NOTIFICATIONS[currentZone.id];
+      if (notif) {
+        sendNotification(notif.title, notif.body);
+      }
+    }
+    lastZoneRef.current = currentZone.id;
+  }, [elapsedMs, activeFast]);
+
   async function handleStart() {
     if (!profile) return;
+    // Request notification permission on first fast start
+    await requestPermission();
     await startFast(profile.selectedProtocol);
     const fast = await getActiveFast();
     setActiveFast(fast);
     setElapsedMs(0);
     notifiedRef.current = false;
+    lastZoneRef.current = null;
   }
 
   async function handleEnd() {
@@ -91,6 +109,7 @@ export function TimerScreen() {
     setActiveFast(undefined);
     setElapsedMs(0);
     notifiedRef.current = false;
+    lastZoneRef.current = null;
   }
 
   async function handleCancel() {
@@ -151,18 +170,18 @@ export function TimerScreen() {
         <>
           <ZoneTimeline elapsedMs={elapsedMs} onZoneTap={(id) => openExplorer(id)} />
 
-          {/* Spacer */}
-          <div className="min-h-[24px] flex-1" />
+          {/* Spacer — pushes controls to the bottom */}
+          <div className="flex-1" />
 
           {/* Slide to end */}
           <div className="w-full max-w-sm px-2">
             <SlideToEnd onComplete={handleEnd} goalReached={elapsedMs >= targetMs && targetMs > 0} />
           </div>
 
-          {/* Started-at — quiet metadata at the bottom */}
+          {/* Started-at — quiet metadata docked above tab bar */}
           <button
             onClick={() => setEditStartOpen(true)}
-            className="mt-3 mb-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors"
+            className="mt-3 mb-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-full min-h-[44px] text-gray-600 text-xs hover:text-gray-400 transition-colors"
           >
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z" />
@@ -171,22 +190,22 @@ export function TimerScreen() {
           </button>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-3 mt-4 mb-2">
-          <button onClick={handleStart}
-            className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
-            Start Fast
-          </button>
-          <button
-            onClick={() => openExplorer()}
-            className="text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors"
-          >
-            Explore Fasting Zones &rarr;
-          </button>
-        </div>
+        <>
+          <div className="flex-1" />
+          <div className="flex flex-col items-center gap-3 mb-6">
+            <button onClick={handleStart}
+              className="bg-indigo-500 hover:bg-indigo-400 text-white px-14 py-4 rounded-full font-semibold text-lg min-h-[52px] active:scale-95 transition-all duration-200 shadow-lg shadow-indigo-500/25">
+              Start Fast
+            </button>
+            <button
+              onClick={() => openExplorer()}
+              className="text-indigo-400 text-sm font-medium hover:text-indigo-300 transition-colors"
+            >
+              Explore Fasting Zones &rarr;
+            </button>
+          </div>
+        </>
       )}
-
-      {/* Bottom spacer — adds breathing room above tab bar */}
-      <div className="flex-[1]" />
 
       <ZoneExplorer
         open={explorerOpen}

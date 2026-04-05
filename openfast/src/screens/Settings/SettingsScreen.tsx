@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../../db/database";
 import { PROTOCOLS } from "../../utils/protocols";
 import { exportAllData, importAllData, clearAllData } from "../../db/export-import";
+import { isSupported as notificationsSupported, requestPermission } from "../../utils/notifications";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import type { UserProfile } from "../../types";
 
@@ -18,8 +19,26 @@ export function SettingsScreen() {
   const [showWaterGoal, setShowWaterGoal] = useState(false);
   const [waterGoalInput, setWaterGoalInput] = useState("");
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [notifStatus, setNotifStatus] = useState<"granted" | "prompt" | "denied" | "not-installed" | "unsupported">("prompt");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isInstalledPwa = window.matchMedia("(display-mode: standalone)").matches
+    || (navigator as unknown as { standalone?: boolean }).standalone === true;
+
+  useEffect(() => {
+    if (!notificationsSupported()) {
+      setNotifStatus(isInstalledPwa ? "unsupported" : "not-installed");
+    } else {
+      setNotifStatus(Notification.permission === "granted" ? "granted" : Notification.permission === "denied" ? "denied" : "prompt");
+    }
+  }, [isInstalledPwa]);
+
+  async function handleNotificationToggle() {
+    if (notifStatus === "not-installed" || notifStatus === "unsupported") return;
+    const result = await requestPermission();
+    setNotifStatus(result === "granted" ? "granted" : result === "denied" ? "denied" : "prompt");
+  }
 
   useEffect(() => {
     async function load() {
@@ -102,6 +121,24 @@ export function SettingsScreen() {
           valueColor="text-indigo-400"
           onPress={() => setShowProtocolPicker(true)}
         />
+        {notifStatus === "not-installed" ? (
+          <div className="px-4 py-3.5">
+            <span className="text-white text-sm">Notifications</span>
+            <p className="text-gray-500 text-xs mt-1">Install this app to your Home Screen to enable notifications</p>
+          </div>
+        ) : notifStatus === "unsupported" ? (
+          <div className="px-4 py-3.5">
+            <span className="text-white text-sm">Notifications</span>
+            <p className="text-gray-500 text-xs mt-1">Not supported on this device</p>
+          </div>
+        ) : (
+          <SettingsRow
+            label="Notifications"
+            value={notifStatus === "granted" ? "On" : notifStatus === "denied" ? "Enable in Settings" : "Off"}
+            valueColor={notifStatus === "granted" ? "text-green-400" : undefined}
+            onPress={handleNotificationToggle}
+          />
+        )}
       </div>
 
       {/* Hydration Section */}
