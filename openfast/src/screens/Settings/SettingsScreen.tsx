@@ -180,7 +180,7 @@ export function SettingsScreen() {
               const keys = await caches.keys();
               for (const key of keys) await caches.delete(key);
             }
-            window.location.reload();
+            window.location.href = import.meta.env.BASE_URL;
           }}
         />
         <div className="flex items-center justify-between px-4 py-3.5">
