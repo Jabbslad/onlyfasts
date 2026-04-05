@@ -56,7 +56,7 @@ export function SwipeNav({ children, initialIndex = 1, onSettingsTap }: SwipeNav
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Top bar: dots + gear icon */}
-      <div className="shrink-0 pt-[env(safe-area-inset-top,0px)] bg-[#0f0f1a] z-10">
+      <div className="shrink-0 bg-[#0f0f1a] z-10">
         <div className="flex items-center justify-between px-4 py-2">
           {/* Screen label */}
           <span className="text-white/60 text-xs font-medium tracking-wide w-16">

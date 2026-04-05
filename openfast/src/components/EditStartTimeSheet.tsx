@@ -136,7 +136,7 @@ export function EditStartTimeSheet({ open, onClose, currentStartTime, onSave, on
           {onDiscard && (
             <button
               onClick={onDiscard}
-              className="w-full py-3 text-red-400/70 text-xs hover:text-red-400 transition-colors pb-[max(1rem,env(safe-area-inset-bottom))]"
+              className="w-full py-3 text-red-400/70 text-xs hover:text-red-400 transition-colors mb-4"
             >
               Discard this fast
             </button>

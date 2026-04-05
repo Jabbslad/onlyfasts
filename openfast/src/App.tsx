@@ -66,7 +66,7 @@ export default function App() {
       {/* Settings as full-screen overlay */}
       {showSettings && (
         <div className="fixed inset-0 z-50 bg-[#0f0f1a] flex flex-col overflow-hidden">
-          <div className="shrink-0 pt-[env(safe-area-inset-top,0px)] px-4 py-3 flex items-center justify-between">
+          <div className="shrink-0 px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => setShowSettings(false)}
               className="text-indigo-400 text-sm font-medium min-h-[44px] flex items-center"
@@ -83,7 +83,7 @@ export default function App() {
       {/* Tips & Guides overlay */}
       {showGuides && (
         <div className="fixed inset-0 z-50 bg-[#0f0f1a] flex flex-col overflow-hidden">
-          <div className="shrink-0 pt-[env(safe-area-inset-top,0px)] px-4 py-3 flex items-center justify-between">
+          <div className="shrink-0 px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => { setShowGuides(false); setShowSettings(true); }}
               className="text-indigo-400 text-sm font-medium min-h-[44px] flex items-center"

@@ -7,10 +7,7 @@ html, body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
-  /* Gradient matching the screens — extends seamlessly into unsafe areas
-     (status bar at top, home indicator at bottom) on iOS PWA */
-  background: linear-gradient(to bottom right, #0f0f1a, #1a1a2e);
-  background-attachment: fixed;
+  background: #0f0f1a;
 }
 
 body {
