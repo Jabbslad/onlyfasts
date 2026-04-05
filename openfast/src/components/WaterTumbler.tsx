@@ -103,7 +103,7 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
   }, []);
 
   // Straw drop animation
-  const [strawY, setStrawY] = useState(-80); // start above the glass
+  const [strawY, setStrawY] = useState(-400); // start well off-screen
   const [showStraw, setShowStraw] = useState(false);
   const strawAnimRef = useRef<number>(0);
   const strawShownRef = useRef(false);
@@ -112,12 +112,12 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
     if (goalReached && !strawShownRef.current && visible) {
       strawShownRef.current = true;
       setShowStraw(true);
-      setStrawY(-80);
+      setStrawY(-400);
 
       // Small delay so the water fill animation settles first
       const timeout = setTimeout(() => {
         const start = performance.now();
-        const duration = 800;
+        const duration = 1000;
         const targetY = 0;
 
         function tick(now: number) {
@@ -136,7 +136,7 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
             const bt = (t - 0.8) / 0.2;
             eased = 0.85 + bt * 0.15;
           }
-          setStrawY(-80 + (targetY + 80) * eased);
+          setStrawY(-400 + (targetY + 400) * eased);
           if (t < 1) {
             strawAnimRef.current = requestAnimationFrame(tick);
           }
@@ -149,7 +149,7 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
     } else if (!goalReached) {
       strawShownRef.current = false;
       setShowStraw(false);
-      setStrawY(-80);
+      setStrawY(-400);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalReached, visible]);
@@ -202,6 +202,7 @@ export function WaterTumbler({ fillPercent, visible = true, goalReached = false,
       viewBox={`0 0 ${viewW} ${viewH}`}
       fill="none"
       className="mx-auto"
+      style={{ overflow: "hidden" }}
     >
       <defs>
         <linearGradient id="water-fill" x1="0" y1="0" x2="0" y2="1">
