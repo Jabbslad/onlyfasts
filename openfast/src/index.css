@@ -8,6 +8,8 @@ html, body {
   overflow: hidden;
   overscroll-behavior: none;
   background: #0f0f1a;
+  /* iOS PWA: theme-color only affects the status bar area.
+     The home indicator area uses the html/body background. */
 }
 
 body {
