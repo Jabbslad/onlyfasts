@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useInstallPrompt } from "../hooks/useInstallPrompt";
 
 export function InstallPrompt() {
   const [visible, setVisible] = useState(false);
+  const { canInstall, install } = useInstallPrompt();
 
   useEffect(() => {
     const isStandalone =
@@ -16,7 +18,17 @@ export function InstallPrompt() {
 
     // Show after a short delay so it doesn't flash on load
     const timer = setTimeout(() => setVisible(true), 3000);
-    return () => clearTimeout(timer);
+
+    const onInstalled = () => {
+      localStorage.setItem("openfast-install-dismissed", "1");
+      setVisible(false);
+    };
+    window.addEventListener("appinstalled", onInstalled);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
 
   function dismiss() {
@@ -55,9 +67,19 @@ export function InstallPrompt() {
                 then &quot;Add to Home Screen&quot; for the full app experience with notifications and badges.
               </p>
             ) : (
-              <p className="text-gray-400 text-xs mt-1">
-                Add to your home screen for the full app experience with notifications and badges.
-              </p>
+              <>
+                <p className="text-gray-400 text-xs mt-1">
+                  Add to your home screen for the full app experience with notifications and badges.
+                </p>
+                {canInstall && (
+                  <button
+                    onClick={install}
+                    className="mt-2 px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors min-h-[44px]"
+                  >
+                    Install
+                  </button>
+                )}
+              </>
             )}
           </div>
           <button

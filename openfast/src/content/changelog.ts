@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.3.1",
+    date: "2026-04-05",
+    changes: [
+      "Install prompt now triggers native app install dialog on Android and desktop Chrome/Edge — one tap to install",
+    ],
+  },
+  {
     version: "0.3.0",
     date: "2026-04-05",
     changes: [
