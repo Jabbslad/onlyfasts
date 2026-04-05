@@ -6,6 +6,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "0.4.3",
+    date: "2026-04-05",
+    changes: [
+      "Water tumbler now animates — water rises with a sloshing wave when the screen comes into view, and splashes when you add water",
+    ],
+  },
+  {
     version: "0.4.2",
     date: "2026-04-05",
     changes: [

@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 interface WaterTumblerProps {
   fillPercent: number; // 0-100
   size?: number;
@@ -9,28 +11,119 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
   // Tumbler dimensions (in viewBox coordinates)
   const viewW = 120;
   const viewH = 160;
-  const topWidth = 90;     // wider at top
-  const bottomWidth = 70;  // narrower at bottom
-  const bodyTop = 30;      // where the glass body starts (below rim)
-  const bodyBottom = 145;  // where the glass body ends
+  const topWidth = 90;
+  const bottomWidth = 70;
+  const bodyTop = 30;
+  const bodyBottom = 145;
   const bodyHeight = bodyBottom - bodyTop;
+  const cx = viewW / 2;
+  const rimCurve = 4;
 
-  // Water fill level (fills from bottom up)
-  const waterHeight = (clampedFill / 100) * bodyHeight;
+  // Animation state
+  const [displayFill, setDisplayFill] = useState(0);
+  const [waveAmplitude, setWaveAmplitude] = useState(0);
+  const [wavePhase, setWavePhase] = useState(0);
+  const animRef = useRef<number>(0);
+  const prevFillRef = useRef(0);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const isVisible = useRef(false);
+  const hasEntrance = useRef(false);
+
+  // Entrance animation: rise from 0 to current when scrolling into view
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible.current) {
+          isVisible.current = true;
+          if (clampedFill > 0) {
+            animateRise(0, clampedFill, 1200);
+          }
+          hasEntrance.current = true;
+        } else if (!entry.isIntersecting) {
+          isVisible.current = false;
+          hasEntrance.current = false;
+          cancelAnimationFrame(animRef.current);
+          setDisplayFill(0);
+          setWaveAmplitude(0);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Splash animation: when fillPercent increases (water added)
+  useEffect(() => {
+    if (!isVisible.current || !hasEntrance.current) {
+      prevFillRef.current = clampedFill;
+      return;
+    }
+
+    const prev = prevFillRef.current;
+    const diff = clampedFill - prev;
+    prevFillRef.current = clampedFill;
+
+    if (diff > 0) {
+      // Animate from previous fill to new fill with splash
+      animateRise(prev, clampedFill, 800, diff * 0.15);
+    } else if (diff < 0) {
+      // Water removed — just settle
+      setDisplayFill(clampedFill);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clampedFill]);
+
+  function animateRise(from: number, to: number, duration: number, splashIntensity = 8) {
+    cancelAnimationFrame(animRef.current);
+    const start = performance.now();
+
+    function tick(now: number) {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+
+      // Ease-out cubic for the rise
+      const eased = 1 - Math.pow(1 - t, 3);
+      setDisplayFill(from + (to - from) * eased);
+
+      // Damped sine wave for the slosh
+      // Starts strong, oscillates 3-4 times, dampens to 0
+      const waveT = elapsed / 1000;
+      const damping = Math.exp(-waveT * 3);
+      const wave = damping * splashIntensity * Math.sin(waveT * 14);
+      setWaveAmplitude(wave);
+      setWavePhase(waveT * 8);
+
+      if (t < 1 || Math.abs(wave) > 0.1) {
+        animRef.current = requestAnimationFrame(tick);
+      } else {
+        setWaveAmplitude(0);
+      }
+    }
+
+    animRef.current = requestAnimationFrame(tick);
+  }
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(animRef.current);
+  }, []);
+
+  // Computed water geometry
+  const waterHeight = (displayFill / 100) * bodyHeight;
   const waterTop = bodyBottom - waterHeight;
 
-  // Tapered sides: interpolate width based on Y position
   function getWidth(y: number): number {
-    const t = (y - bodyTop) / bodyHeight; // 0 at top, 1 at bottom
+    const t = (y - bodyTop) / bodyHeight;
     return topWidth + (bottomWidth - topWidth) * t;
   }
 
   const waterTopWidth = getWidth(waterTop);
   const waterBottomWidth = getWidth(bodyBottom);
 
-  // Glass outline path (tapered tumbler with curves at top and bottom)
-  const cx = viewW / 2;
-  const rimCurve = 4; // slight upward curve at the rim
   const glassPath = `
     M ${cx - topWidth / 2} ${bodyTop}
     Q ${cx} ${bodyTop - rimCurve} ${cx + topWidth / 2} ${bodyTop}
@@ -39,26 +132,27 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
     Z
   `;
 
-  // Water shape (clipped inside the glass)
-  const waterPath = `
-    M ${cx - waterTopWidth / 2} ${waterTop}
-    L ${cx - waterBottomWidth / 2} ${bodyBottom}
-    Q ${cx} ${bodyBottom + 8} ${cx + waterBottomWidth / 2} ${bodyBottom}
-    L ${cx + waterTopWidth / 2} ${waterTop}
-    Z
-  `;
+  // Water body path with animated wave as top edge
+  const amp = waveAmplitude;
+  const ph = wavePhase;
+  const wW = waterTopWidth;
 
-  // Subtle wave at water surface
-  const waveY = waterTop;
-  const waveW = waterTopWidth;
-  const wavePath = clampedFill > 0 ? `
-    M ${cx - waveW / 2} ${waveY}
-    Q ${cx - waveW / 4} ${waveY - 3} ${cx} ${waveY}
-    Q ${cx + waveW / 4} ${waveY + 3} ${cx + waveW / 2} ${waveY}
+  const waterPath = displayFill > 0 ? `
+    M ${cx - wW / 2} ${waterTop}
+    C ${cx - wW / 3} ${waterTop + amp * Math.sin(ph)}
+      ${cx - wW / 6} ${waterTop - amp * Math.sin(ph + 1.5)}
+      ${cx} ${waterTop + amp * Math.sin(ph + 3) * 0.5}
+    C ${cx + wW / 6} ${waterTop - amp * Math.sin(ph + 1.5)}
+      ${cx + wW / 3} ${waterTop + amp * Math.sin(ph)}
+      ${cx + wW / 2} ${waterTop}
+    L ${cx + waterBottomWidth / 2} ${bodyBottom}
+    Q ${cx} ${bodyBottom + 8} ${cx - waterBottomWidth / 2} ${bodyBottom}
+    Z
   ` : "";
 
   return (
     <svg
+      ref={svgRef}
       width={size}
       height={size * (viewH / viewW)}
       viewBox={`0 0 ${viewW} ${viewH}`}
@@ -66,18 +160,15 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
       className="mx-auto"
     >
       <defs>
-        {/* Water gradient */}
         <linearGradient id="water-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.5" />
           <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.7" />
         </linearGradient>
-        {/* Glass highlight */}
         <linearGradient id="glass-shine" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="white" stopOpacity="0.08" />
           <stop offset="40%" stopColor="white" stopOpacity="0.02" />
           <stop offset="100%" stopColor="white" stopOpacity="0.06" />
         </linearGradient>
-        {/* Clip to glass interior */}
         <clipPath id="glass-clip">
           <path d={`
             M ${cx - topWidth / 2 + 2} ${bodyTop + 1}
@@ -90,30 +181,28 @@ export function WaterTumbler({ fillPercent, size = 180 }: WaterTumblerProps) {
       </defs>
 
       {/* Glass body fill (translucent) */}
-      <path
-        d={glassPath}
-        fill="url(#glass-shine)"
-        stroke="none"
-      />
+      <path d={glassPath} fill="url(#glass-shine)" stroke="none" />
 
       {/* Water fill (clipped inside glass) */}
-      {clampedFill > 0 && (
+      {displayFill > 0 && (
         <g clipPath="url(#glass-clip)">
+          <path d={waterPath} fill="url(#water-fill)" />
+          {/* Wave surface highlight */}
           <path
-            d={waterPath}
-            fill="url(#water-fill)"
-            className="transition-all duration-700 ease-out"
+            d={`
+              M ${cx - wW / 2} ${waterTop}
+              C ${cx - wW / 3} ${waterTop + amp * Math.sin(ph)}
+                ${cx - wW / 6} ${waterTop - amp * Math.sin(ph + 1.5)}
+                ${cx} ${waterTop + amp * Math.sin(ph + 3) * 0.5}
+              C ${cx + wW / 6} ${waterTop - amp * Math.sin(ph + 1.5)}
+                ${cx + wW / 3} ${waterTop + amp * Math.sin(ph)}
+                ${cx + wW / 2} ${waterTop}
+            `}
+            stroke="#38bdf8"
+            strokeWidth="1.5"
+            strokeOpacity={0.3 + Math.min(Math.abs(amp) * 0.05, 0.3)}
+            fill="none"
           />
-          {/* Wave surface */}
-          {wavePath && (
-            <path
-              d={wavePath}
-              stroke="#38bdf8"
-              strokeWidth="1.5"
-              strokeOpacity="0.4"
-              fill="none"
-            />
-          )}
         </g>
       )}
 
